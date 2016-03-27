@@ -135,18 +135,19 @@
     var text1     = "未开始 (空格 space 开始游戏)";
     var text2     = "进行中 (空格 space 暂停游戏)";
     var text3     = "暂停中 (空格 space 继续游戏)";
+    var text4     = "游戏结束 <button id='reStart'>重新开始游戏</button>";
     var mObj      = function(){
-        var mainThis   = this;
-        var direction  = RIGHT;
-        var porsFood   = {};
-        var porsList   = [];
-        var isDone     = false;
-        var eatFood    = false;
-        this.clearFlg   = 0;
-        this.bgBox     = document.getElementsByClassName("table")[0];
-        this.status    = document.getElementById("status");
-        this.core      = document.getElementById("core");
-        this.initTable = function(){
+        var mainThis    = this;
+        var direction    = RIGHT;
+        var porsFood     = {};
+        var porsList     = [];
+        var isDone       = false;
+        var eatFood      = false;
+        this.clearFlg    = 0;
+        this.bgBox       = document.getElementsByClassName("table")[0];
+        this.status      = document.getElementById("status");
+        this.core        = document.getElementById("core");
+        this.initTable   = function(){
             var table = "";
             table += "<table>";
             for(var i=0; i<h; i++){
@@ -159,14 +160,14 @@
             table += "</table>";
             mainObj.bgBox.innerHTML = table;
         };
-        this.randomNum = function(){
+        this.randomNum   = function(){
             var num = parseInt(Math.random()*w);
             return num;
         };
-        this.hasClass  = function(ele,cls){
+        this.hasClass    = function(ele,cls){
             return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
         };
-        this.proFood   = function(){
+        this.proFood     = function(){
             var x = mainThis.randomNum();
             var y = mainThis.randomNum();
             var food = document.getElementById("box-"+x+"-"+y+"");
@@ -180,13 +181,13 @@
             console.log(porsFood);
             food.className = "food";
         };
-        this.initSnake = function(){
+        this.initSnake   = function(){
             var ss = document.getElementById("box-"+initX+"-"+initY+"");
             porsList.push({"x":initX,"y":initY});
             ss.className = "ss";
         };
-        this.eventBind = function(){
-            document.onkeydown=function(e){
+        this.eventBind   = function(){
+            document.onkeydown       = function(e){
                 var head  = porsList[porsList.length-1];
                 var event = e||window.event;
                 document.getElementById("box-"+porsList[0].x+"-"+porsList[0].y).className = "";
@@ -238,7 +239,14 @@
                 isDone = true;
             };
         };
-        this.move      = function(){
+        this.reStartBind = function(){
+            mainThis.status.innerHTML = text4;
+            document.getElementById("reStart").onclick = function(){
+                mainThis.core.value = 0;
+                window.history.go(0);
+            };
+        };
+        this.move        = function(){
             mainThis.clearFlg = setInterval(function(){
                 var head  = porsList[porsList.length-1];
                 eatFood = false;
@@ -274,39 +282,36 @@
                     }
                     console.log(speed);
                     clearInterval(mainThis.clearFlg);
-                    mainThis.move();
                     mainThis.proFood();
-                    head  = porsList[porsList.length-1];
-                }
-                try{
+                    setTimeout(mainThis.move(),speed);
+                }else{
                     document.getElementById("box-"+porsList[0].x+"-"+porsList[0].y).className = "";
-                }catch (e){
-                    clearInterval(mainThis.clearFlg);
-                    return false;
+                    for(var i=0; i<porsList.length-1; i++){
+                        porsList[i].x = porsList[i+1].x;
+                        porsList[i].y = porsList[i+1].y;
+                    }
+                    switch (direction){
+                        case UP:
+                            head.x--;
+                            break;
+                        case RIGHT:
+                            head.y++;
+                            break;
+                        case DOWN:
+                            head.x++;
+                            break;
+                        case LEFT:
+                            head.y--;
+                            break;
+                        default:
+                            break;
+                    }
+                    porsList[porsList.length-1] = head;
                 }
 
-                for(var i=0; i<porsList.length-1; i++){
-                    porsList[i].x = porsList[i+1].x;
-                    porsList[i].y = porsList[i+1].y;
-                }
-                switch (direction){
-                    case UP:
-                        head.x--;
-                        break;
-                    case RIGHT:
-                        head.y++;
-                        break;
-                    case DOWN:
-                        head.x++;
-                        break;
-                    case LEFT:
-                        head.y--;
-                        break;
-                    default:
-                        break;
-                }
                 if(porsList[porsList.length-1].x<0 || porsList[porsList.length-1].x>w || porsList[porsList.length-1].y<0 || porsList[porsList.length-1].y>h){
                     clearInterval(mainThis.clearFlg);
+                    mainThis.reStartBind();
                     alert("game over");
                     return false;
                 }
@@ -314,6 +319,7 @@
                     for(var j=i+1; j<porsList.length; j++){
                         if(porsList[i].x==porsList[j].x && porsList[i].y==porsList[j].y){
                             clearInterval(mainThis.clearFlg);
+                            mainThis.reStartBind();
                             alert("game over");
                             break;
                         }
@@ -322,7 +328,7 @@
                 }
             },speed);
         };
-        this.init      = function(){
+        this.init        = function(){
             mainThis.initTable();
             mainThis.initSnake();
             mainThis.proFood();
