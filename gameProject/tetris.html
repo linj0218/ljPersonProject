@@ -95,13 +95,14 @@
     var DOWN       = 40;
     var LEFT       = 37;
     var SPACE      = 32;
-    var core       = 0;
+    var score      = 0;
     var kindNum    = 7;
     var clearFlg   = 0;
     var speed      = 500;
     var isStop     = true;
     var isBottom   = false;
     var unit       = new Array(4);
+    var exitList   = new Array(h);
     var mObj       = function(){
         this.main = document.getElementsByClassName("main")[0];
     };
@@ -118,6 +119,12 @@
             }
             html.push("</table>");
             this.main.innerHTML = html.join("");
+            for(var i=0; i<h; i++){
+                exitList[i] = new Array(w);
+                for(var j=0; j<w; j++){
+                    exitList[i][j] = 0;
+                }
+            }
         },
         randomNum : function(){
             return Math.random()*(kindNum-1);
@@ -171,57 +178,151 @@
                     break;
             }
             for(var i=0; i<unit.length; i++){
+                if(mainThis.isExit(unit[i].x,unit[i].y)){
+                    alert("game over");
+                    clearInterval(clearFlg);
+                    return false;
+                }
+            }
+            for(var i=0; i<unit.length; i++){
                 document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
             }
+        },
+        copyUnit  : function(old){
+            var o = new Array(4);
+            for(var i=0; i<4; i++){
+                o[i] = {x:0, y:0};
+            }
+            for(var i=0; i<4; i++){
+                o[i].x = old[i].x;
+                o[i].y = old[i].y;
+            }
+            return o;
+        },
+        clearUnit : function(){
+            for(var i=0; i<unit.length; i++){
+                document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "";
+            }
+        },
+        drawUnit  : function(){
+            for(var i=0; i<unit.length; i++){
+                document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
+            }
+        },
+        isScore  : function(){
+            var lines = [];
+            for(var i=0; i<exitList.length; i++){
+                for(var j=0; j<exitList[i].length; j++){
+                    if(exitList[i][j] == 0){
+                        break;
+                    }
+                    if(j==exitList[i].length-1){
+                        lines.push(i);
+                    }
+                }
+            }
+            console.log(lines);
+            return lines;
+        },
+        delLines  : function(list){
+            var len = list.length;
+            for(var i=0; i<list.length; i++){
+                for(var j=0; j<w; j++){
+                    exitList[i][j] = 0;
+                    document.getElementById("box-"+list[i]+"-"+j).style.background = "#fff";
+                }
+            }
+        },
+        score     : function(n){
+            switch (n){
+                case 1:
+                    console.log("10分");
+                    break;
+                case 2:
+                    console.log("20分");
+                    break;
+                case 3:
+                    console.log("30分");
+                    break;
+                case 4:
+                    console.log("40分");
+                    break;
+            }
+        },
+        isExit    : function(x,y){
+            if(exitList[x][y]==1){
+                return true;
+            }
+            return false;
         },
         control   : function(){
             var mainThis = this;
             document.onkeydown = function(e){
                 switch (e.keyCode){
                     case CHANGE:
-
+                        if(isStop){
+                            return false;
+                        }
+                        var tempUnit = mainThis.copyUnit(unit);
+                        var cx = Math.round((tempUnit[0].x + tempUnit[1].x + tempUnit[2].x + tempUnit[3].x)/4);
+                        var cy = Math.round((tempUnit[0].y + tempUnit[1].y + tempUnit[2].y + tempUnit[3].y)/4);
+                        for(var i=0; i<unit.length; i++){
+                            tempUnit[i].x = cx+cy-unit[i].y;
+                            tempUnit[i].y = cy-cx+unit[i].x;
+                        }
+                        for(var i=0; i<tempUnit.length; i++){
+                            if(tempUnit[i].y == (w-1) || tempUnit[i].x == (h-1) || tempUnit[i].y ==0 || mainThis.isExit(tempUnit[i].x,tempUnit[i].y)){
+                                return false;
+                            }
+                        }
+                        mainThis.clearUnit();
+                        unit = tempUnit;
+                        mainThis.drawUnit();
                         break;
                     case RIGHT:
+                        if(isStop){
+                            return false;
+                        }
                         for(var i=0; i<unit.length; i++){
-                            if(unit[i].y == (w-1)){
+                            if(unit[i].y == (w-1) || mainThis.isExit(unit[i].x,unit[i].y+1)){
                                 return false;
                             }
                         }
+                        mainThis.clearUnit();
                         for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "";
                             unit[i].y++;
                         }
-                        for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
-                        }
+                        mainThis.drawUnit();
                         break;
                     case DOWN:
+                        if(isStop){
+                            return false;
+                        }
                         for(var i=0; i<unit.length; i++){
-                            if(unit[i].x == (h-1)){
+                            if(unit[i].x == (h-1) || mainThis.isExit(unit[i].x+1,unit[i].y)){
                                 return false;
                             }
                         }
+                        mainThis.clearUnit();
                         for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "";
                             unit[i].x++;
                         }
-                        for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
-                        }
+                        mainThis.drawUnit();
                         break;
                     case LEFT:
+                        if(isStop){
+                            return false;
+                        }
                         for(var i=0; i<unit.length; i++){
-                            if(unit[i].y == 0){
+                            if(unit[i].y == 0 || mainThis.isExit(unit[i].x,unit[i].y-1)){
                                 return false;
                             }
                         }
+                        mainThis.clearUnit();
                         for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "";
                             unit[i].y--;
                         }
-                        for(var i=0; i<unit.length; i++){
-                            document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
-                        }
+                        mainThis.drawUnit();
                         break;
                     case SPACE:
                         if(isStop){
@@ -245,12 +346,19 @@
             var mainThis = this;
             clearFlg = setInterval(function(){
                 for(var i=0; i<unit.length; i++){
-                    if( mainThis.hasClass(document.getElementById("box-"+(unit[i].x+1)+"-"+unit[i].y),"off") || unit[i].x == (h-1)){
-                        document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "off";
+                    if(unit[i].x == (h-1) || mainThis.isExit(unit[i].x+1,unit[i].y)){
                         isBottom = true;
                     }
                 }
                 if(isBottom){
+                    for(var i=0; i<unit.length; i++){
+                        exitList[unit[i].x][unit[i].y]=1;
+                    }
+                    if(mainThis.isScore()){
+                        var lines = mainThis.isScore();
+                        mainThis.delLines(lines);
+                        mainThis.score(lines.length);
+                    }
                     mainThis.getUnit();
                     isBottom = false;
                 }else{
