@@ -220,54 +220,56 @@
     </script>
 </head>
 <body>
-    <div class="part-1">
-        <p>小贴士1：优惠券需到店使用哦~</p>
-        <p>小贴士2：镀晶镀膜服务需提前一天预约哦~</p>
-    </div>
-    <div class="part-2">
-        <ul>
-            <!--<li>
-                <div class="part-2-1">
-                    <a class="check-btn"></a>
-                </div>&lt;!&ndash;
-                &ndash;&gt;<div class="part-2-2">
-                    <div class="left-bg"></div>
-                    <div class="part-2-21">
-                        <b>31</b>张
-                    </div>&lt;!&ndash;
-                    &ndash;&gt;<div class="part-2-22">
-                        <p class="cou-name">洗车优惠券</p>
-                        <p class="cou-time">有效期至:2016.03.16</p>
-                    </div>
-                </div>
-            </li>-->
-        </ul>
-    </div>
-    <div class="part-3">
-        <div class="title">
-            <span class="line"></span>
-            <span class="name">需提前一天预约</span>
-            <span class="line"></span>
+    <div id="body" style="display: block;">
+        <div class="part-1">
+            <p>小贴士1：优惠券需到店使用哦~</p>
+            <p>小贴士2：镀晶镀膜服务需提前一天预约哦~</p>
         </div>
-    </div>
-    <div class="part-4">
-        <ul>
-            <!--<li>
-                <div class="part-2-2">
-                    <div class="left-bg"></div>
-                    <div class="part-2-21">
-                        <b>7</b>张
+        <div class="part-2">
+            <ul>
+                <!--<li>
+                    <div class="part-2-1">
+                        <a class="check-btn"></a>
                     </div>&lt;!&ndash;
-                    &ndash;&gt;<div class="part-2-22">
-                        <p class="cou-name">洗车优惠券</p>
-                        <p class="cou-time">有效期至:2016.03.16</p>
+                    &ndash;&gt;<div class="part-2-2">
+                        <div class="left-bg"></div>
+                        <div class="part-2-21">
+                            <b>31</b>张
+                        </div>&lt;!&ndash;
+                        &ndash;&gt;<div class="part-2-22">
+                            <p class="cou-name">洗车优惠券</p>
+                            <p class="cou-time">有效期至:2016.03.16</p>
+                        </div>
                     </div>
-                </div>
-            </li>-->
-        </ul>
-    </div>
-    <div class="part-5">
-        <button>确定使用</button>
+                </li>-->
+            </ul>
+        </div>
+        <div class="part-3">
+            <div class="title">
+                <span class="line"></span>
+                <span class="name">需提前一天预约</span>
+                <span class="line"></span>
+            </div>
+        </div>
+        <div class="part-4">
+            <ul>
+                <!--<li>
+                    <div class="part-2-2">
+                        <div class="left-bg"></div>
+                        <div class="part-2-21">
+                            <b>7</b>张
+                        </div>&lt;!&ndash;
+                        &ndash;&gt;<div class="part-2-22">
+                            <p class="cou-name">洗车优惠券</p>
+                            <p class="cou-time">有效期至:2016.03.16</p>
+                        </div>
+                    </div>
+                </li>-->
+            </ul>
+        </div>
+        <div class="part-5">
+            <button>确定使用</button>
+        </div>
     </div>
 </body>
 <script>
@@ -281,37 +283,51 @@
             var reqData  = {
                 "accesstoken" : "90d720ede01f1e9200c9a55835ca7570",
 //                "accesstoken" : localStorage.accesstoken,             //token
-                "couponpkgid" : 10   //优惠券包id
+                "couponpkgid" : 1   //优惠券包id
             };
-            HCAjax("/wcr007",reqData,function(result){
+            $.ajax({
+                type:'GET',
+                url: ROOTURL+"/wcr007",
+                data : para,
+                dataType: 'jsonp',
+                jsonp: 'jsoncallback',
+                cache:false,
+                timeout: 5000,
+                contentType:"application/json; charset/utf-8",
+                success: function (data) {
+                    successCallBack(data);
+                }
+            })
+            HCAjax("/wcr007",{"data":JSON.stringify(reqData)},function(result){
                 if(result.status == 1){
                     alert(result.msg);
                     return false;
                 }
+                console.log(result);
                 var data = result.data;
-                var html     = mainThis.initList1(data.couponlist);
-                var html2    = mainThis.initList2(data.needconfirmlsit);
+                var html     = mainThis.initList1(data.needconfirmlsit);
+                var html2    = mainThis.initList2(data.couponlist);
                 mainThis.list1.innerHTML = html;
                 mainThis.list2.innerHTML = html2;
-                this.eventBind();
+                mainThis.eventBind();
             });
         },
         initList1 : function(list){
             var html = "";
-            for(var i=0; i<3; i++){
+            for(var i=0; i<list.length; i++){
                 html += "" +
-                        "<li>"+
+                        "<li data-couponid=\""+list[i].couponid+"\" data-canselect=\""+list[i].canselect+"\">"+
                         "   <div class=\"part-2-1\">"+
                         "       <a class=\"check-btn\"></a>"+
                         "   </div><!--"+
                         "--><div class=\"part-2-2\">"+
                         "       <div class=\"left-bg\"></div>"+
                         "           <div class=\"part-2-21\">"+
-                        "               <b>31</b>张"+
+                        "               <b>"+list[i].cnt+"</b>张"+
                         "           </div><!--"+
                         "   --><div class=\"part-2-22\">"+
-                        "           <p class=\"cou-name\">洗车优惠券</p>"+
-                        "           <p class=\"cou-time\">有效期至:2016.03.16</p>"+
+                        "           <p class=\"cou-name\">"+list[i].couponname+"</p>"+
+                        "           <p class=\"cou-time\">有效期至:"+list[i].valuedate+"</p>"+
                         "       </div>"+
                         "   </div>"+
                         "</li>";
@@ -320,17 +336,17 @@
         },
         initList2 : function(list){
             var html = "";
-            for(var i=0; i<2; i++){
+            for(var i=0; i<list.length; i++){
                 html += "" +
-                        "<li>"+
+                        "<li data-couponid=\""+list[i].couponid+"\" data-canselect=\""+list[i].canselect+"\">"+
                         "   <div class=\"part-2-2\">"+
                         "       <div class=\"left-bg\"></div>"+
                         "       <div class=\"part-2-21\">"+
-                        "           <b>7</b>张"+
+                        "           <b>"+list[i].cnt+"</b>张"+
                         "       </div><!--"+
                         "   --><div class=\"part-2-22\">"+
-                        "           <p class=\"cou-name\">洗车优惠券</p>"+
-                        "           <p class=\"cou-time\">有效期至:2016.03.16</p>"+
+                        "           <p class=\"cou-name\">"+list[i].couponname+"</p>"+
+                        "           <p class=\"cou-time\">有效期至:"+list[i].valuedate+"</p>"+
                         "       </div>"+
                         "   </div>"+
                         "</li>";

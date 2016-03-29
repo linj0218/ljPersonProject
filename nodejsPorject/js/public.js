@@ -66,6 +66,28 @@ function changeTime(o){
         default:;
     }
 }
+function changeTime2(o){
+    var len = o.length;
+    switch(len){
+        case 3:
+            var t = o[0]+":"+o[1]+o[2];
+            return t;
+            break;
+        case 4:
+            var t = o[0]+o[1]+":"+o[2]+o[3];
+            return t;
+            break;
+        case 8:
+            var t = o[0]+o[1]+o[2]+o[3]+"-"+o[4]+o[5]+"-"+o[6]+o[7];
+            return t;
+            break;
+        case 14:
+            var y = o[0]+o[1]+o[2]+o[3]+"-"+o[4]+o[5]+"-"+o[6]+o[7]+" "+o[8]+o[9]+":"+o[10]+o[11]+":"+o[12]+o[13];
+            return y;
+            break;
+        default:;
+    }
+}
 function HCAjax(url,para,successCallBack){
     /*公共参数处理*/
     if (crossDomainFlg == 1) {
