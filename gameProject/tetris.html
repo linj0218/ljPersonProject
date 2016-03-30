@@ -416,7 +416,9 @@
                         mainThis.delLines(lines);
                         mainThis.score(lines.length);
                     }
+                    clearInterval(clearFlg);
                     mainThis.getUnit();
+                    mainThis.move();
                     isBottom = false;
                 }else{
                     for(var i=0; i<unit.length; i++){
