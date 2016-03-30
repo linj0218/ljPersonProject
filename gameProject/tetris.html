@@ -57,25 +57,39 @@
         }
         .box{
             height: 500px;
+            text-align: center;
         }
         .main{
-            text-align: center;
-            padding-top: 10px;
+            padding: 10px;
+            display: inline-block;
+            vertical-align: top;
         }
-        .main table{
+        .view{
+            display: inline-block;
+            vertical-align: top;
+            width: 120px;
+            padding: 10px;
+        }
+        .main table, .next-unit table{
             border-spacing: 0;
             border-collapse: collapse;
             margin: auto;
         }
-        .main table td{
+        .main table td,.next-unit table td{
             width: 20px;
             height: 20px;
             border: 1px solid #eee;
         }
-        .main table td.on{
-            background: #f00;
+        .next-unit{
+            margin-bottom: 10px;
         }
-        .main table td.off{
+        #score{
+            border: none;
+            width: 100%;
+            text-align: center;
+            color: #f00;
+        }
+        td.on{
             background: #f00;
         }
     </style>
@@ -84,6 +98,21 @@
     <div class="box">
         <div class="main">
 
+        </div>
+        <div class="view">
+            <!--<div class="next-unit">
+                <label>下一个：</label>
+                <table>
+                    <tr><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td></tr>
+                    <tr><td></td><td></td><td></td><td></td></tr>
+                </table>
+            </div>-->
+            <div>
+                <label>得分</label>
+                <input readonly id="score" value="0">
+            </div>
         </div>
     </div>
 </body>
@@ -99,12 +128,15 @@
     var kindNum    = 7;
     var clearFlg   = 0;
     var speed      = 500;
+    var speedStep  = 5;
     var isStop     = true;
     var isBottom   = false;
     var unit       = new Array(4);
+    var nextUnit   = new Array(4);
     var exitList   = new Array(h);
     var mObj       = function(){
-        this.main = document.getElementsByClassName("main")[0];
+        this.main   = document.getElementsByClassName("main")[0];
+        this._score = document.getElementById("score");
     };
     mObj.prototype = {
         initPage  : function(){
@@ -132,7 +164,6 @@
         getUnit   : function(){
             var mainThis = this;
             var num      = parseInt(mainThis.randomNum());
-            console.log(num);
             switch (num){
                 case 0:
                     unit[0] = {"x":0,"y":4};
@@ -180,6 +211,7 @@
             for(var i=0; i<unit.length; i++){
                 if(mainThis.isExit(unit[i].x,unit[i].y)){
                     alert("game over");
+                    console.log(unit);
                     clearInterval(clearFlg);
                     return false;
                 }
@@ -209,7 +241,7 @@
                 document.getElementById("box-"+unit[i].x+"-"+unit[i].y).className = "on";
             }
         },
-        isScore  : function(){
+        isScore   : function(){
             var lines = [];
             for(var i=0; i<exitList.length; i++){
                 for(var j=0; j<exitList[i].length; j++){
@@ -218,36 +250,62 @@
                     }
                     if(j==exitList[i].length-1){
                         lines.push(i);
+                        if(i!=0){
+                            for(var k=i-1; k>=0; k--){
+                                exitList[k+1] = exitList[k];
+                            }
+                            for(var k=0; k< w; k++){
+                                exitList[0][k] = 0;
+                            }
+                        }
                     }
                 }
             }
-            console.log(lines);
             return lines;
         },
         delLines  : function(list){
-            var len = list.length;
+            var mainThis = this;
             for(var i=0; i<list.length; i++){
                 for(var j=0; j<w; j++){
                     exitList[i][j] = 0;
-                    document.getElementById("box-"+list[i]+"-"+j).style.background = "#fff";
+                    document.getElementById("box-"+list[i]+"-"+j).className = "";
+                }
+            }
+            setTimeout(function(){
+                mainThis.redrawWin();
+            },300);
+        },
+        redrawWin : function(){
+            for(var i=0; i<h; i++){
+                for(var j=0; j<w; j++){
+                    document.getElementById("box-"+i+"-"+j).className = "";
+                }
+            }
+            for(var i=0; i<h; i++){
+                for(var j=0; j<w; j++){
+                    if(exitList[i][j]==1){
+                        document.getElementById("box-"+i+"-"+j).className = "on";
+                    }
                 }
             }
         },
         score     : function(n){
+            var mainThis = this;
             switch (n){
                 case 1:
-                    console.log("10分");
+                    score += 10;
                     break;
                 case 2:
-                    console.log("20分");
+                    score += 20;
                     break;
                 case 3:
-                    console.log("30分");
+                    score += 30;
                     break;
                 case 4:
-                    console.log("40分");
+                    score += 40;
                     break;
             }
+            mainThis._score.value = score;
         },
         isExit    : function(x,y){
             if(exitList[x][y]==1){
@@ -354,8 +412,8 @@
                     for(var i=0; i<unit.length; i++){
                         exitList[unit[i].x][unit[i].y]=1;
                     }
-                    if(mainThis.isScore()){
-                        var lines = mainThis.isScore();
+                    var lines = mainThis.isScore();
+                    if(!!lines.length){
                         mainThis.delLines(lines);
                         mainThis.score(lines.length);
                     }
