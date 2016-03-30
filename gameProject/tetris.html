@@ -267,13 +267,12 @@
             var mainThis = this;
             for(var i=0; i<list.length; i++){
                 for(var j=0; j<w; j++){
-                    exitList[i][j] = 0;
                     document.getElementById("box-"+list[i]+"-"+j).className = "";
                 }
             }
             setTimeout(function(){
                 mainThis.redrawWin();
-            },300);
+            },100);
         },
         redrawWin : function(){
             for(var i=0; i<h; i++){
