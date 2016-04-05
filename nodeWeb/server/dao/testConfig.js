@@ -1,4 +1,4 @@
-var mysql         = require('mysql');        
+/*var mysql         = require('mysql');        
 var TEST_DATABASE = 'node1s';  
 var TEST_TABLE    = 'nuser';  
 //创建连接  
@@ -26,4 +26,57 @@ client.query(
       }    
     client.end();  
   }  
-); 
+); */
+function conectDB(){
+  var mysql         = require('mysql');        
+  var TEST_DATABASE = 'node1s';  
+  //创建连接  
+  var client        = mysql.createConnection({
+    user     : 'root',
+    password : 'root',
+  });
+
+  client.connect();
+  client.query("use " + TEST_DATABASE);
+  return client;
+}
+
+function select(sqlStr,callback){
+  var client = conectDB();
+  client.query(
+    sqlStr,
+    function selectCb(err, results, fields) {  
+      if (err) {  
+        throw err;  
+      }
+      client.end();
+      if(results){
+
+        callback(results);
+
+      }else{
+        
+      } 
+    }  
+  ); 
+}
+
+function add(sqlStr, callback) {
+  var client = conectDB();
+  client.query(
+    sqlStr,
+    function addCb(err, results, fields) {
+      if(err){
+        throw err;
+      }
+      client.end();
+      if(results){
+
+        callback(results)
+
+      }
+    }
+  );
+}
+exports.select = select;
+exports.add    = add;
