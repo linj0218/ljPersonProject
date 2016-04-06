@@ -15,7 +15,7 @@ var server = http.createServer( function(request, response) {
     // 静态文件
     if( !pathname.split("/api/")[1] ) {
     	fs.exists(realPath, function (exists) {
-    		console.log(realPath);
+    		// console.log(realPath);
             if (!exists) {
 
                 response.writeHead(404, "Not Found", {'Content-Type': 'text/plain'});
@@ -71,8 +71,28 @@ var server = http.createServer( function(request, response) {
     else {
 
         var apiPort = pathname.split("/api/")[1];
-        console.log(apiPort);
-        api.apiController(apiPort,response);
+        var resStr  = "";
+        var params  = url.parse(request.url, true).query.data;
+        console.log("接口："+apiPort+" 参数："+params);
+
+        api.apiController(apiPort, params, response);
+        /*var params = url.parse(request.url, true)
+        if (params.query && params.query.callback) {
+            resStr =  params.query.jsoncallback + '(' + JSON.stringify(api.apiController(apiPort)) + ')';//jsonp  
+        } else {
+            resStr = JSON.stringify(api.apiController(apiPort));
+        }
+
+        response.statusCode=200;
+        // response.sendDate=false;
+        response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+        response.setHeader("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+        response.setHeader("X-Powered-By",' 3.2.1');
+        response.setHeader("Content-Type","text/plain");
+        // response.write("callback("+JSON.stringify(results)+")");
+        response.write( resStr );
+        response.end();*/
 
     }
 }).listen(port);

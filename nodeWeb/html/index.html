@@ -42,7 +42,7 @@
 <meta name="msapplication-tap-highlight" content="no">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
-<title>登录</title>
+<title>首页</title>
 <script src="./js/jquery.min.js"></script>
 <script src="./js/util.js"></script>
 
@@ -53,54 +53,17 @@ body{
 	background: #ebebeb;
 	font-size: 14px;
 }
-#login-name, #login-pwd{
-	display: block;
-    width: 60%;
-    margin-left: 20%;
-    margin-top: 10px;
-    padding: 10px 0;
-    border: none;
-    box-sizing: border-box;
-    outline: none;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1rem;
-}
-#login-btn{
-    width: 60%;
-    margin-left: 20%;
-    border: none;
-    background: greenyellow;
-    margin-top: 10px;
-    padding: 10px 0;
-    border-radius: 5px;
-    color: #666;
-    font-size: 1rem;
-}
-#user-icon{
-	width: 70px;
-    height: 70px;
-    margin: 10px auto 0 0;
-}
 </style>
 <body>
-	<div>
-		<div style="text-align: center;">
-			<img id="user-icon" src="./img/user.png">
-		</div>
-		<!-- <input id="real-name"> -->
-		<input id="login-name" placeholder="请输入用户名或手机号">
-		<!-- <input id="address"> -->
-		<!-- <input id="tel"> -->
-		<input id="login-pwd" type="password" placeholder="请输入密码">
-		<button id="login-btn">登录</button>
+	<div class="game-list">
+		<ul>
+			
+		</ul>
 	</div>
 </body>
 <script>
 	var mObj = function(){
-		this.loginName = document.getElementById("login-name");
-		this.loginPwd  = document.getElementById("login-pwd");
-		this.loginBtn  = document.getElementById("login-btn");
+		
 	}
 	mObj.prototype = {
 		init      : function(){
@@ -108,36 +71,7 @@ body{
 		},
 		eventBind : function(){
 			var mainThis = this;
-			this.loginBtn.onclick = function(){
-				var name     = mainThis.loginName.value;
-				var pwd      = mainThis.loginPwd.value;
-				var reqData  = {
-					"name"     : name,
-					"pwd"      : pwd
-				};
-				$.ajax({
-	                type        : 'GET',
-	                url         : APIROOT+"api/api003",
-	                data        : {"data":JSON.stringify(reqData)},
-	                // dataType    : 'jsonp',
-	                jsonp       : 'jsoncallback',
-	                cache       : false,
-	                timeout     : 5000,
-	                contentType : "application/json; charset/utf-8",
-	                success     : function (result) {
-	                	var data = JSON.parse(result);
-	                	console.log(data);
-	                	if(data.status != 0){
-	                		alert(data.msg);
-	                		return false;
-	                	}
-	                	window.location.href = "./index.html";
-	                },
-	                error       : function(err){
-	                	console.log(err);
-	                }
-            	});
-			}
+			
 		}
 	}
 	var mainObj = new mObj();
