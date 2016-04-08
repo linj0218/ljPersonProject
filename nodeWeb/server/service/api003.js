@@ -2,7 +2,7 @@
 var query  = require("../tooljs/tooljs.js");
 
 function api003Service(params, response){
-	query.select("select u.loginname,u.password,u.nusername,u.gender,u.nusertel from nuser u",function(results){
+	query.select("select u.userid,u.loginname,u.password,u.username,u.gender,u.usertel from user u",function(results){
 
 		// console.log(params);
 		var reqData = JSON.parse(params);

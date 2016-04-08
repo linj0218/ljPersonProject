@@ -51,7 +51,7 @@
 *{margin: 0; padding: 0;}
 body{
 	background: #ebebeb;
-	font-size: 14px;
+	font-size: 16px;
 }
 #login-name, #login-pwd{
 	display: block;
@@ -131,6 +131,7 @@ body{
 	                		alert(data.msg);
 	                		return false;
 	                	}
+	                	localStorage.uid = JSON.parse(data.data).nuserid;
 	                	window.location.href = "./index.html";
 	                },
 	                error       : function(err){
