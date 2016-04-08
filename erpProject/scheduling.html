@@ -286,6 +286,7 @@
 <script>
 	var mObj = function(){
 		this.tBody = document.getElementsByClassName("part-2")[0].getElementsByTagName("tbody")[0];
+		this.tempDay = 0;
 	};
 	mObj.prototype = {
 		init      : function(){
@@ -296,18 +297,18 @@
 			var tds      = 7;
 			var table    = [];
 			var first    = 4;
-			var tempDay  = 0;
 			var len      = 30;
 			var mainThis = this;
 			for(var i=0; i<trs; i++){
 				table.push("<tr>");
 				for(var j=0; j<tds; j++){
-					if(i==0 && j==first && tempDay ==0){
-						var html = mainThis.loadHtml(i,j,tempDay);
-						table.push(html);
-					}else if(tempDay !=0 && tempDay<len){
-						var html = mainThis.loadHtml(i,j,tempDay);
-						table.push(html);
+						console.log('ll');
+					if(i==0 && j==first && mainThis.tempDay ==0){
+						var _html = mainThis.loadHtml(i,j);
+						table.push(_html);
+					}else if(mainThis.tempDay !=0 && mainThis.tempDay<len){
+						var _html = mainThis.loadHtml(i,j);
+						table.push(_html);
 					}else{
 						table.push("<td id=\"td-"+i+"-"+j+"\"><div class=\"td-left\" style='color: #fff;'>.</div><div class=\"td-right\"></div></td>");
 					}
@@ -317,10 +318,11 @@
 			mainThis.tBody.innerHTML = table.join("");
 			this.eventBind();
 		},
-		loadHtml : function(i,j,tempDay){
+		loadHtml : function(i,j){
+			var mainThis = this;
 			var html = "" +
 				"<td id=\"td-"+i+"-"+j+"\">" +
-				"	<div class=\"td-left\">"+(++tempDay)+"</div>" +
+				"	<div class=\"td-left\">"+(++mainThis.tempDay)+"</div>" +
 				"	<div class=\"td-right\">" +
 				"		<a class='color-blue'>小明</a>" +
 				"		<a class='color-blue'>小红</a>" +
