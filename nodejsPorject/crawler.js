@@ -1,5 +1,12 @@
 var http = require("http")
-var url  = "http://www.handlecar-oms.com/htmlfile/prod/bjbapp/mobile/carCheckReport.html?shid=603&sttid=113&detail=1"
+var cheerio = require("cheerio");
+var url  = "http://i.y.qq.com/v8/fcg-bin/fcg_v8_mvout4web.fcg?cmd=1&format=html&tpl=mvplay&cid=artx6eb4qnw2ccw"
+
+function filterChapters(html){
+	var $ = cheerio.load(html)
+	var chapters = $("iframe")
+	console.log(chapters.prevObject[0]);
+}
 
 http.get(url, function(res){
 	var html = ""
@@ -8,7 +15,7 @@ http.get(url, function(res){
 	})
 
 	res.on("end", function(){
-		console.log(html);
+		filterChapters(html)
 	})
 }).on("error",function(){
 	console.log("获取数据错误");
