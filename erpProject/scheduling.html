@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+
+<meta charset="UTF-8">
+<meta name="Copyright" content="" />
+<!-- 让IE浏览器用最高级内核渲染页面 还有用 Chrome 框架的页面用webkit 内核
+================================================== -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!-- IOS6全屏 Chrome高版本全屏
+================================================== -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- 让360双核浏览器用webkit内核渲染页面
+================================================== -->
+<meta name="renderer" content="webkit">
+<!-- Mobile Specific Metas
+================================================== -->
+<!-- !!!注意 minimal-ui 是IOS7.1的新属性，最小化浏览器UI -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="format-detection" content="telephone=no">
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit">
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true">
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320">
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait">
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait">
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes">
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true">
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application">
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app">
+<!-- windows phone 点击无高光 -->
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+<title>门店排班表</title>
+<script src="./js/jquery.min.js"></script>
+<script src="./js/util.js"></script>
+
+<!-- <link rel="stylesheet" type="text/css" href="css/weui.min.css"> -->
+<style>
+	*{margin: 0; padding: 0;}
+	html,body{
+		height: 100%
+	}
+	body{
+		background: #ebebeb;
+		font-size: 16px;
+	}
+	.show-area{
+		height: 80%;
+		background: #fff;
+		margin: 50px auto;
+		width: 80%;
+		position: relative;
+		z-index: 99;
+	}
+	.bg-area{
+		background: #000;
+		z-index: 2;
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		opacity: .4;
+		top: 0;
+		left: 0;
+	}
+	.part-1{
+		width: 100%;
+	}
+	.part-left, .part-right{
+		width: 50%;
+		display: inline-block;
+		box-sizing: border-box;
+		padding: 20px;
+	}
+	.part-left{
+		padding-left: 50px;
+	}
+	.part-right{
+		text-align: center;
+	}
+	.pl-1, .pl-4{
+		font-weight: 600;
+		font-size: 2rem;
+		display: inline-block;
+		vertical-align: bottom;
+		width: 2rem;
+		text-align: center;
+		cursor: pointer;
+	}
+	.pl-2{
+		font-size: 4rem;
+		display: inline-block;
+		vertical-align: bottom;
+		width: 5rem;
+		text-align: center;
+		line-height: 3.5rem;
+	}
+	.pl-3{
+		font-size: 2rem;
+		display: inline-block;
+		vertical-align: bottom;
+		width: 2rem;
+	}
+	.part-right>select{
+		min-width: 30%;
+		border: 1px solid #ccc;
+		height: 2rem;
+		line-height: 2rem;
+		font-size: 1rem;
+		color: #555;
+		border-radius: 2px;
+		box-sizing: border-box;
+	}
+	.part-2{
+		text-align: center;
+	}
+	.part-2>table{
+		width: 80%;
+		margin: auto;
+		border-collapse: collapse;
+	}
+	.part-2>table th{
+		font-weight: 600;
+		height: 5rem;
+		line-height: 5rem;
+	}
+	.part-2>table td{
+		border: 2px solid #111;
+		position: relative;
+		/*box-sizing: border-box;*/
+		/*overflow: hidden;*/
+	}
+	.part-2>table tr:hover td{
+		border-top: 3px solid #111;
+		border-left: 3px solid #111;
+		border-bottom: 3px solid #111;
+	}
+	.part-2>table td:hover{
+		border: 3px solid #F7EBBB !important;
+	}
+	.part-2>table tr th:first-child,.part-2>table tr td:first-child{
+		color: #f00;
+	}
+	.td-left, .td-right{
+		float: left;
+		box-sizing: border-box;
+		/*overflow: hidden;*/
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.td-left{
+		width: 40%;
+		border-right: 1px solid #666;
+		font-weight: 600;
+		height: 51px;
+		line-height: 40px;
+		font-size: 1.5rem;
+		padding: 5px;
+		cursor: pointer;
+		overflow: hidden;
+	}
+	.td-right{
+		width: 60%;
+	}
+	.td-right>a{
+		display: block;
+		font-size: .8rem;
+		padding: 5px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		cursor: pointer;
+		text-align: left;
+	}
+	.td-right>a:nth-child(2n){
+		border-top: 1px solid #666;
+		box-sizing: border-box;
+	}
+	.color-blue{
+		color: #2D80FF;
+	}
+	.show-box{
+		display: none;
+	}
+	.show-box.on{
+		display: block;
+		position: absolute;
+		top: -10px;
+		left: 90%;
+		background: #fff;
+		/*width: 200px;*/
+		z-index: 9;
+		border: 2px solid #111;
+		border-radius: 10px;
+		color: #2D80FF;
+		text-align: left;
+		padding: 1rem;
+		box-sizing: border-box;
+		line-height: 1rem;
+		font-size: .9rem;
+	}
+	.show-box.on>p{
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.show-box.on>hr{
+		margin: 5px 0;
+		background: #111;
+		height: 1px;
+		border: none;
+	}
+	.show-box.on:after{
+		content: '';
+		border-width: 0 2px 2px 0;
+		background: inherit;
+		border-style: solid;
+		border-color: #000;
+		width: 1rem;
+		height: 1rem;
+		-webkit-transform: translateX(-50%) translateY(0) rotate(135deg);
+		-moz-transform: translateX(-50%) translateY(0) rotate(135deg);
+		-ms-transform: translateX(-50%) translateY(0) rotate(135deg);
+		-o-transform: translateX(-50%) translateY(0) rotate(135deg);
+		transform: translateX(-50%) translateY(0) rotate(135deg);
+		top: 31px;
+		left: -2px;
+		position: absolute;
+		z-index: 1;
+	}
+</style>
+<body>
+	<div class="show-area">
+		<div class="part-1">
+			<div class="part-left">
+				<span class="pl-1"><</span>
+				<span class="pl-2">3</span>
+				<span class="pl-3">月</span>
+				<span class="pl-4">></span>
+			</div><!--
+			--><div class="part-right">
+				<select>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+				</select>
+				<select>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+				</select>
+			</div>
+		</div>
+		<div class="part-2">
+			<table>
+				<thead>
+					<tr>
+						<th>星期天</th>
+						<th>星期一</th>
+						<th>星期二</th>
+						<th>星期三</th>
+						<th>星期四</th>
+						<th>星期五</th>
+						<th>星期六</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="bg-area"></div>
+</body>
+<script>
+	var mObj = function(){
+		this.tBody = document.getElementsByClassName("part-2")[0].getElementsByTagName("tbody")[0];
+	};
+	mObj.prototype = {
+		init      : function(){
+			this.initPage();
+		},
+		initPage  : function(){
+			var trs      = 5;
+			var tds      = 7;
+			var table    = [];
+			var first    = 4;
+			var tempDay  = 0;
+			var len      = 30;
+			var mainThis = this;
+			for(var i=0; i<trs; i++){
+				table.push("<tr>");
+				for(var j=0; j<tds; j++){
+					if(i==0 && j==first && tempDay ==0){
+						var html = mainThis.loadHtml(i,j,tempDay);
+						table.push(html);
+					}else if(tempDay !=0 && tempDay<len){
+						var html = mainThis.loadHtml(i,j,tempDay);
+						table.push(html);
+					}else{
+						table.push("<td id=\"td-"+i+"-"+j+"\"><div class=\"td-left\" style='color: #fff;'>.</div><div class=\"td-right\"></div></td>");
+					}
+				}
+				table.push("</tr>");
+			}
+			mainThis.tBody.innerHTML = table.join("");
+			this.eventBind();
+		},
+		loadHtml : function(i,j,tempDay){
+			var html = "" +
+				"<td id=\"td-"+i+"-"+j+"\">" +
+				"	<div class=\"td-left\">"+(++tempDay)+"</div>" +
+				"	<div class=\"td-right\">" +
+				"		<a class='color-blue'>小明</a>" +
+				"		<a class='color-blue'>小红</a>" +
+				"		<div class=\"show-box\">" +
+				"			<p>小郑 上午12:20-13:30</p>" +
+				"			<p>徐汇规则车行</p>" +
+				"		</div>" +
+				"	</div>" +
+				"</td>";
+			return html;
+		},
+		eventBind : function(){
+			var mainThis = this;
+			$(".part-2>table td").hover(function(){
+				$(this).find(".show-box").addClass("on");
+			},function(){
+				$(this).find(".show-box").removeClass("on");
+			});
+		}
+	};
+	var mainObj = new mObj();
+	mainObj.init();
+</script>
+</html>
