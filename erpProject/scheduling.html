@@ -102,9 +102,22 @@
 		font-size: 4rem;
 		display: inline-block;
 		vertical-align: bottom;
-		width: 5rem;
+		width: 80px;
 		text-align: center;
 		line-height: 3.5rem;
+		overflow: hidden;
+		position: relative;
+		height: 3.5rem;
+	}
+	.pl22{
+		width: 960px;
+		position: absolute;
+		left: 0;
+	}
+	.pl22>a{
+		display: inline-block;
+		width: 80px;
+		float: left;
 	}
 	.pl-3{
 		font-size: 2rem;
@@ -172,6 +185,7 @@
 	}
 	.td-right{
 		width: 60%;
+		position: relative;
 	}
 	.td-right>a{
 		display: block;
@@ -239,54 +253,177 @@
 		position: absolute;
 		z-index: 1;
 	}
+	#popup{
+		position: absolute;
+		z-index: 9;
+		left: -20px;
+		top: -10px;
+		height: 70px;
+		border: 2px solid #111;
+		box-sizing: border-box;
+		width: 13rem;
+		overflow: hidden;
+		background: #eee;
+	}
+	#popup input{
+		width: 1rem;
+		border: none;
+		border-bottom: 1px solid #555;
+		background: inherit;
+	}
+	.inp-l{
+		text-align: right;
+	}
+	.pop-left{
+		width: 30%;
+		display: inline-block;
+		height: 70px;
+		line-height: 70px;
+		font-size: 1.5rem;
+		font-weight: 600;
+		border-right: 2px solid #111;
+		box-sizing: border-box;
+	}
+	.pop-right{
+		vertical-align: top;
+		display: inline-block;
+		width: 70%;
+	}
+	.pop-pr1{
+		display: block;
+		height: 35px;
+		line-height: 35px;
+		border-bottom: 1px solid #111;
+		box-sizing: border-box;
+		color: #555;
+	}
+	.pop-pr2{
+		display: block;
+		height: 35px;
+		line-height: 35px;
+	}
+	.pop-pr2>a{
+		display: inline-block;
+		width: 50%;
+		height: 100%;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.btn-del{
+		border-right: 1px solid #111;
+		box-sizing: border-box;
+		color: #f00;
+	}
+	.btn-add{
+		color: limegreen;
+	}
+	.can-edit{
+		background: #8DEABB;
+	}
+	.cant-edit{
+		background: #F68483;
+	}
+	.in-edit{
+		background: #8CAAF2;
+	}
+	.sele-box{
+		position: absolute;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		z-index: 9;
+	}
+	.sele-box>select{
+		width: 100%;
+		height: 100%;
+		background: inherit;
+		border: none;
+	}
+	.part-3{
+		text-align: right;
+	}
+	.part-3>button{
+		margin-right: 10%;
+		margin-top: 20px;
+		border: none;
+		width: 5rem;
+		height: 2rem;
+		line-height: 2rem;
+		border-radius: 2px;
+		box-shadow: 2px 2px 5px #666;
+		cursor: pointer;
+		outline: none;
+	}
 </style>
 <body>
-	<div class="show-area">
-		<div class="part-1">
-			<div class="part-left">
-				<span class="pl-1"><</span>
-				<span class="pl-2">3</span>
-				<span class="pl-3">月</span>
-				<span class="pl-4">></span>
-			</div><!--
+<div class="show-area">
+	<div class="part-1">
+		<div class="part-left">
+			<span class="pl-1"><</span>
+				<span class="pl-2">
+					<div class="pl22">
+						<a>1</a>
+						<a>2</a>
+						<a>3</a>
+						<a>4</a>
+						<a>5</a>
+						<a>6</a>
+						<a>7</a>
+						<a>8</a>
+						<a>9</a>
+						<a>10</a>
+						<a>11</a>
+						<a>12</a>
+					</div>
+				</span>
+			<span class="pl-3">月</span>
+			<span class="pl-4">></span>
+		</div><!--
 			--><div class="part-right">
-				<select>
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-				</select>
-				<select>
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-				</select>
-			</div>
-		</div>
-		<div class="part-2">
-			<table>
-				<thead>
-					<tr>
-						<th>星期天</th>
-						<th>星期一</th>
-						<th>星期二</th>
-						<th>星期三</th>
-						<th>星期四</th>
-						<th>星期五</th>
-						<th>星期六</th>
-					</tr>
-				</thead>
-				<tbody>
-
-				</tbody>
-			</table>
-		</div>
+		<select>
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+		</select>
+		<!--<select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>-->
 	</div>
-	<div class="bg-area"></div>
+	</div>
+	<div class="part-2">
+		<table>
+			<thead>
+			<tr>
+				<th>星期天</th>
+				<th>星期一</th>
+				<th>星期二</th>
+				<th>星期三</th>
+				<th>星期四</th>
+				<th>星期五</th>
+				<th>星期六</th>
+			</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+	</div>
+	<div class="part-3">
+		<button id="btn-sub">提交修改</button>
+	</div>
+</div>
+<div class="bg-area"></div>
 </body>
 <script>
+	var is_scroll = false;
+	var tempDay   = 0;
 	var mObj = function(){
-		this.tBody = document.getElementsByClassName("part-2")[0].getElementsByTagName("tbody")[0];
-		this.tempDay = 0;
+		this.tBody     = document.getElementsByClassName("part-2")[0].getElementsByTagName("tbody")[0];
+		this.turnRight = document.getElementsByClassName("pl-1")[0];
+		this.turnLeft  = document.getElementsByClassName("pl-4")[0];
 	};
 	mObj.prototype = {
 		init      : function(){
@@ -302,11 +439,10 @@
 			for(var i=0; i<trs; i++){
 				table.push("<tr>");
 				for(var j=0; j<tds; j++){
-						console.log('ll');
-					if(i==0 && j==first && mainThis.tempDay ==0){
+					if(i==0 && j==first && tempDay ==0){
 						var _html = mainThis.loadHtml(i,j);
 						table.push(_html);
-					}else if(mainThis.tempDay !=0 && mainThis.tempDay<len){
+					}else if(tempDay !=0 && tempDay<len){
 						var _html = mainThis.loadHtml(i,j);
 						table.push(_html);
 					}else{
@@ -321,17 +457,20 @@
 		loadHtml : function(i,j){
 			var mainThis = this;
 			var html = "" +
-				"<td id=\"td-"+i+"-"+j+"\">" +
-				"	<div class=\"td-left\">"+(++mainThis.tempDay)+"</div>" +
-				"	<div class=\"td-right\">" +
-				"		<a class='color-blue'>小明</a>" +
-				"		<a class='color-blue'>小红</a>" +
-				"		<div class=\"show-box\">" +
-				"			<p>小郑 上午12:20-13:30</p>" +
-				"			<p>徐汇规则车行</p>" +
-				"		</div>" +
-				"	</div>" +
-				"</td>";
+					"<td id=\"td-"+i+"-"+j+"\">" +
+					"	<div class=\"td-left\">"+(++tempDay)+"</div>" +
+					"	<div class=\"td-right\">" +
+					"		<a class='color-blue' data-start=\"9:30\" data-end=\"12:45\">小明</a>" +
+					"		<a class='color-blue' data-start=\"14:30\" data-end=\"16:45\">小红</a>" +
+					"		<div class=\"show-box\">" +
+					"			<p>小郑 上午12:20-13:30</p>" +
+					"			<p>徐汇规则车行</p>" +
+					"           <hr>" +
+					"			<p>小郑 上午12:20-13:30</p>" +
+					"			<p>徐汇规则车行</p>" +
+					"		</div>" +
+					"	</div>" +
+					"</td>";
 			return html;
 		},
 		eventBind : function(){
@@ -341,6 +480,87 @@
 			},function(){
 				$(this).find(".show-box").removeClass("on");
 			});
+			this.turnLeft.onclick = function(){
+				mainThis.scroll(0);
+			};
+			this.turnRight.onclick = function(){
+				mainThis.scroll(1);
+			};
+			$(".td-right>a").unbind("click").on("click",function(){
+				$(".part-2>table td").unbind("mouseenter").unbind("mouseleave");
+				$(".show-box").removeClass("on");
+
+				var $this  = $(this);
+				var _date  = $(this).parent().prev().html();
+				var _time1 = $(this).attr("data-start");
+				var _time2 = $(this).attr("data-end");
+
+				$("#popup").remove();
+				var html   = mainThis.loadPop(_date,_time1,_time2);
+
+				$(this).parent().parent().append(html);
+
+				document.getElementsByClassName("btn-del")[0].onclick = function(){
+					mainThis.eventBind();
+					$("#popup").remove();
+				};
+				document.getElementsByClassName("btn-add")[0].onclick = function(){
+					$this.attr("data-start",$(".inp-1").val()+":"+$(".inp-2").val());
+					$this.attr("data-end",$(".inp-3").val()+":"+$(".inp-4").val());
+					$("#popup").remove();
+
+					var html = mainThis.loadSele();
+					$this.parent().append(html);
+				}
+			});
+			$("#btn-sub").unbind("click").on("click",function(){
+				$(".sele-box").remove();
+				mainThis.eventBind();
+			});
+		},
+		loadPop  : function(d,t1,t2){
+			var html = ""+
+					"<div id=\"popup\">" +
+					"	<span class=\"pop-left\">"+(d)+"</span><!--" +
+					"	--><span class=\"pop-right\">" +
+					"		<span class=\"pop-pr1\">" +
+					"			<input class='inp-l inp-1' value=\""+(t1.split(':')[0])+"\">:<input class='inp-2' value=\""+(t1.split(':')[1])+"\">-<input class='inp-l inp-3' value=\""+(t2.split(':')[0])+"\">:<input class='inp-4' value=\""+(t2.split(':')[1])+"\">" +
+					"		</span>" +
+					"		<span class=\"pop-pr2\">" +
+					"			<a class='btn-del'>×</a><a class='btn-add'>√</a>" +
+					"		</span>" +
+					"	</span>" +
+					"</div>";
+			return html;
+		},
+		loadSele : function(){
+			var html = "" +
+					"<div class='sele-box in-edit'>" +
+					"	<select>" +
+					"		<option>张军</option>" +
+					"		<option>张三</option>" +
+					"		<option>小四</option>" +
+					"	</select>" +
+					"</div>";
+			return html;
+		},
+		scroll   : function(flg){
+			// 0,往左 1,往右
+			if(is_scroll){
+				return false;
+			}
+			var _left = parseInt($(".pl22").css("left"));
+			if(flg == 0){
+				if(_left + $(".pl22").width() > 80){
+					is_scroll = true;
+					$(".pl22").animate({"left":"-="+$(".pl22>a").width()},500,function(){is_scroll=false;});
+				}
+			}else if(flg == 1){
+				if(_left < 0){
+					is_scroll = true;
+					$(".pl22").animate({"left":"+="+$(".pl22>a").width()},500,function(){is_scroll=false;});
+				}
+			}
 		}
 	};
 	var mainObj = new mObj();
