@@ -1,0 +1,569 @@
+
+<style type="text/css">
+    .mt5 {
+        margin-top: 5px;
+    }
+    .w125 {width: 125px;}
+    .w450 {width: 450px;}
+</style>
+<div class="container">
+    <div id="toolbar-self" class="btn-group">
+       <button id="btn_add" type="button" class="btn btn-default" onclick="openAddCstCarPkgModel();">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+       </button>
+        <input id="insuuploadid" name="insuupload" class="file" type="file" onchange="ajaxFileUpload();" style="display: none">
+       
+       <button id="btn_edit" type="button" class="btn btn-default" onclick="fnImFileTrigger();" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;">
+        <span class="glyphicon glyphicon-import" aria-hidden="true"></span>导入
+       </button>
+       <span style="color: blue" data-toggle="tooltip" title="批次为每周一开始的具体年月日为编号，一个批次包含周一至周日信息">&nbsp;&nbsp;批次</span>：
+       <select class="piciselect" style="width: 200px; height: 34px; border: solid 1px #ADADAD;border-radius: 4px;" onchange="fnChangePiCi();" >
+           <option></option>
+       </select>
+    </div>
+    <table id="table-self"></table>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="cstCarPkgModal" tabindex="-1" role="dialog" 
+       aria-labelledby="cstCarPkgModalLabel" aria-hidden="true" data-backdrop="static">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" 
+                   aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="cstCarPkgModalLabel">
+                   编辑
+                </h4>
+             </div>
+             <div class="modal-body">
+                <div style="margin:auto;">
+                   <form class="bs-example bs-example-form" role="form">
+                      <input type="text" class="cciiid" style="display: none;">
+                      <div class="input-group mt5">
+                         <span class="input-group-addon w125">车主姓名：</span>
+                         <input type="text" class="form-control cmemname w450" placeholder="请输入车主姓名" style="width: 450px;">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">联系方式：</span>
+                         <input type="text" class="form-control cmemtel" placeholder="请输入联系方式" style="width: 450px;">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">车牌号：</span>
+                         <input type="text" class="form-control cmemcarplate" placeholder="请输入车牌号" style="width: 450px;">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">车型：</span>
+                         <input type="text" class="form-control cmemcartype" placeholder="请输入车型" style="width: 450px;">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">保单生效日：</span>
+                         <input type="text" class="form-control cciiinsustartdate" style="width: 450px;" readonly="readonly">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">保单金额：</span>
+                         <input type="text" class="form-control cciiinsuprice" onchange="changeinsuprice(this);" style="width: 450px;">
+                      </div>
+                      <div class="input-group mt5"> 
+                         <span class="input-group-addon w125">礼包规格：</span>
+                         <input type="text" class="form-control cciirpkgprice" disabled="disabled" style="width: 450px;">
+                      </div>
+                   </form>
+                </div>
+
+             </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                   data-dismiss="modal">
+                   关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="btnSave" onclick="savecustcarpkginfo();">
+                   提交
+                </button>
+             </div>
+          </div><!-- /.modal-content -->
+       </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="liBaoGuiGeModal" tabindex="-1" role="dialog" 
+       aria-labelledby="liBaoGuiGeModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="liBaoGuiGeModalLabel">礼包规格</h4>
+             </div>
+             <div class="modal-body">
+                <div style="margin:auto;">
+                    <table class="table libaoguige-table"></table>
+                </div>
+
+             </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                   data-dismiss="modal">
+                   关闭
+                </button>
+             </div>
+          </div>
+       </div>
+    </div>
+    
+</div>
+<script>
+    var contentPath = httpurl;
+    var httputil = new jsutil(httpurl);
+    var authinfo =   httputil.getauthinfo();
+//    alert(authinfo);
+    $(function () {
+
+        piciselectinit(); //批次下拉框加载
+
+        $(".cciiinsustartdate").datetimepicker({
+           format: 'yyyy-mm-dd',  
+           weekStart: 1,  
+           autoclose: true,  
+           startView: 2,  
+           minView: 2,  
+           forceParse: false,  
+           language: 'zh-CN' 
+        });
+
+        $('#table-self').bootstrapTable( {
+            method: 'get',
+            url: contentPath + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo,
+            height: 600,
+            width:500,
+            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "cciiid",
+            sortOrder: "desc",
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            // queryParams: fnQueryParams,
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            search: true,  //搜索
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'cciiid',
+                title: 'cciiid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle'
+                // sortable: true,
+                // order: 'desc'
+            }, {
+                field: 'cciipatchdate',
+                title: '批次',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemname',
+                title: '车主姓名',
+                width: 100,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemtel',
+                title: '联系方式',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemcarplate',
+                title: '车牌号',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemcartype',
+                title: '车型',
+                width: 500,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciiinsustartdate',
+                title: '保单生效日期',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciiinsuprice',
+                title: '商业险金额',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciirpkgprice',
+                title: '礼包规格',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true,
+                formatter: cciirpkgpriceFormatter
+            }, {
+                field: 'cciicreatetime',
+                title: '礼包发放日期',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'operate',
+                title: '操作',
+                width: 180,
+                align: 'center',
+                valign: 'middle',
+                formatter: operateFormatter
+                //events: operateEvents
+ 
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+ 
+  
+            },
+            onLoadError: function () {
+            }
+          
+        });
+            //$('#table').bootstrapTable('refresh',{url:'http://192.168.1.68:3030/propertyins/QueryWxCustCarInsuInfo'});
+        $(".pull-right.search").find(".form-control").change(function(){
+            fnChangePiCi();
+        });
+    });
+
+    function cciirpkgpriceFormatter(value, row) {
+        var fmthtm = value ;
+        if(value > 0) {
+            fmthtm += '<a href="javascript: void(0);" onclick="fnLibaoGuiGePanel('+row.cciiinsuprice+');">'+
+                      '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        }
+        return fmthtm;
+    }
+
+    function operateFormatter(value, row) {
+       var opthtm = '<button type="button" class="btn btn-default btn-xs" onclick="uploadCstCarPkg('+row.cciiid+')">'+
+                    '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改</button>'+
+                    '<button type="button" class="btn btn-default btn-xs" onclick="removeCstCarPkg('+row.cciiid+')">'+
+                    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除</button>';
+        return opthtm;
+    }
+
+    function openAddCstCarPkgModel(){
+        $('#cstCarPkgModal input').val("");
+        $('#cstCarPkgModal').modal('show');
+    }
+
+    function uploadCstCarPkg(cciiid) {
+        
+        var jsonpara = {};
+        jsonpara.cciiid = cciiid;
+        httputil.httpget("/propertyins/GetMembercarInsuBean",jsonpara,uploadCstCarPkgcallback);
+    }
+
+    function uploadCstCarPkgcallback(data) {
+        var cstcarpkg = data.data;
+        for(var columnname in cstcarpkg){
+            if(isNaN(columnname)){
+                $("."+columnname).val(cstcarpkg[columnname]);
+            }
+        }
+
+        $('#cstCarPkgModal').modal('show');
+    }
+
+    function changeinsuprice(ths) {
+        var jsonpara = {};
+        var insuprice = $(ths).val();
+        if(isNaN(insuprice)){
+            alert("请输入正确的保单金额");
+        }
+        jsonpara.pprice = parseFloat(insuprice);
+        httputil.httpget("/propertyins/GetPremItemCust", jsonpara, changeinsupriceCallBack);
+    }
+
+    function changeinsupriceCallBack(data) {
+        $(".cciirpkgprice").val(data.data.marketpricetotal);
+    } 
+
+
+    var saveflg = 0;
+    function savecustcarpkginfo() {
+
+        var cciiid = $(".cciiid").val();
+        var cmemname = $(".cmemname").val();
+        var cmemtel = $(".cmemtel").val();    
+        var cmemcarplate = $(".cmemcarplate").val();    
+        var cmemcartype = $(".cmemcartype").val();
+        var cciiinsustartdate = $(".cciiinsustartdate").val();
+        var cciiinsuprice  = $(".cciiinsuprice").val();
+        var cciirpkgprice = $(".cciirpkgprice").val(); 
+        if($.trim(cmemname).length == 0){
+            alert("请输入车主姓名");
+            return;
+        }else{
+            if($.trim(cmemname).length > 15){
+                alert("车主姓名不能超过15位");
+                return;
+            }
+        }
+        if($.trim(cmemtel).length == 0){
+            alert("请输入车主联系电话");
+            return;
+        }else{
+//            if($.trim(cmemtel).length != 11){
+//                alert("车主联系电话必须为11位");
+//                return;
+//            }
+            if(!(/^1[3|4|5|7|8]\d{9}$/.test(cmemtel))){
+                alert("请输入正确的车主联系电话");
+                return;
+            }
+        }
+        if($.trim(cmemcarplate).length == 0){
+            alert("请输入车牌号");
+            return;
+        }else{
+            if($.trim(cmemcarplate).length > 15){
+                alert("车牌号不能超过15位");
+                return;
+            }
+        }
+        if($.trim(cmemcartype).length == 0){
+            alert("请输入车型");
+            return;
+        }else{
+            if($.trim(cmemcartype).length > 65){
+                alert("车型不能超过65位");
+                return;
+            }
+        }
+        if(isNaN(cciiinsuprice) || $.trim(cciiinsuprice).length == 0){
+            alert("请输入正确的保单金额");
+            return;
+        }
+        if($.trim(cciiinsuprice).length > 11){
+            alert("保单金额不能超过11位");
+            return;
+        }
+        if(isNaN(cciirpkgprice)){
+           cciirpkgprice = 0;
+        }
+        var reqjson = {};
+        var requrl = "/propertyins/AddWxCustCarInsuInfo";
+        if (cciiid > 0) {
+            cciiid = parseInt(cciiid);
+            requrl = "/propertyins/UpdateWxCustCarInsuInfo";
+            saveflg = 1; //修改
+        }else{
+            cciiid = parseInt(0);
+        }
+        reqjson.cciiid = cciiid;
+        reqjson.cmemname = cmemname;
+        reqjson.cmemtel = cmemtel;
+        reqjson.cmemcarplate = cmemcarplate;
+        reqjson.cmemcartype = cmemcartype;
+        reqjson.cciiinsustartdate = cciiinsustartdate.replace(/-/g, "");
+        reqjson.cciiinsuprice = parseFloat(cciiinsuprice);
+        reqjson.cciirpkgprice = parseFloat(cciirpkgprice);
+        //var jsondata = JSON.stringify(reqjson);
+        //console.log(jsondata);
+        $("#btnSave").addClass("disabled");
+        httputil.httpget(requrl, reqjson, savecustcarpkginfoCallBack);
+    }
+
+    function savecustcarpkginfoCallBack (data) {
+        if(data.status == 0){
+            alert("提交成功");
+            $('#cstCarPkgModal').modal('hide');
+            $('#cstCarPkgModal input').val("");
+            $('#table-self').bootstrapTable('refresh',{url:contentPath + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo});
+        }else{
+            if(saveflg == 1){
+                if(data.status == -20){
+                    alert("当前保费部分优惠券已被使用，不能修改");
+                }else if(data.status == -30){
+                    alert("当前记录不存在，不能修改");
+                }else if(data.status == -40){
+                    alert("会员信息不存在，不能修改");
+                }else if(data.status == -50){
+                    alert("车辆信息不存在，不能修改");
+                }  else {
+                    alert("提交失败");
+                }
+            }else{
+                alert("提交失败");
+            }
+        }
+        $("#btnSave").removeClass("disabled");
+    }
+
+    function removeCstCarPkg(cciiid) {
+        var y = confirm("确认删除吗");
+        if(y) {
+            var jsonpara = {};
+            jsonpara.cciiid = cciiid;
+            httputil.httpget("/propertyins/DelCustCarPkg", jsonpara, removeCstCarPkgCallBack);
+            
+        }
+    }
+
+    function removeCstCarPkgCallBack(data) {
+        if(data.status >= 0) {
+            alert("删除成功");
+            $('#table-self').bootstrapTable('refresh',{url:contentPath + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo});
+        } else {
+            alert("删除失败");
+        }
+    }
+
+    function fnImFileTrigger(){
+        $("#insuuploadid").trigger("click");
+    }
+
+    function ajaxFileUpload(){
+        var service_ip= httpurl;
+        $.ajaxFileUpload({
+            url :service_ip+"/propertyins/UploadInsuExcel",
+            secureuri :false,
+            type:'post',
+            jsonp: 'jsoncallback',
+            dataType: "jsonp",
+            cache:false,
+            async: false,
+            timeout: 5000,
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: {"fileuploadname":"insuupload"},
+            fileElementId :"insuuploadid",
+            success : function (data,status){
+//                if(status=="success"){
+//                    alert("导入成功！");
+//                }else{
+//                    alert("导入失败！");
+//                }
+                alert("导入成功！");
+                $('#table-self').bootstrapTable('refresh',{url:contentPath + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo});
+            },
+            error: function (data, status, e){
+//                alert(e);
+            }
+        });
+        return false;
+    }
+
+    function piciselectinit() {
+         httputil.httpget("/propertyins/QueryInsuPatchLabelValueList", {}, piciselectinitCallBack);
+
+    }
+
+    function piciselectinitCallBack(data) {
+        var dataRows = data.rows;
+        var optionHtm = "<option value=''>全部</option>";
+        $(".piciselect").html(optionHtm);
+        if(dataRows.length > 0) {
+            for(var i = 0; i<dataRows.length; i++ ) {
+                var drow = dataRows[i];
+                optionHtm = optionHtm + "<option value='"+drow.lvlabel+"'>"+ drow.lvvalue +"</option>";
+            } 
+        }
+        $(".piciselect").html(optionHtm);
+    }
+
+    function fnQueryParams(params) {
+       var pici = $(".piciselect").val();
+       var qparam = $(".form-control").val();
+       var param = {
+          limit: params.limit, //页面大小
+          offset: params.offset, //页码
+          sort: params.sortName,
+          order: params.sortOrder,
+          cciipatchdate: pici,
+          qparam: qparam
+       };
+       return param;
+    }
+
+    function fnChangePiCi() {
+        var pici = $(".piciselect").val();
+        var qparam = $(".form-control").val();
+        var qurl = contentPath + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo+'&cciipatchdate='+pici+'&qparam='+qparam;
+        $('#table-self').bootstrapTable('refresh', {url: qurl});
+    }
+
+    function fnLibaoGuiGePanel(cciiinsuprice) {
+        if(cciiinsuprice <= 0) {
+            return;
+        }
+        var jsonpara = {};
+        jsonpara.pprice = cciiinsuprice;
+        httputil.httpget("/propertyins/GetPremItemCust", jsonpara, fnLibaoGuiGePanelCallBack);
+    }
+
+    function fnLibaoGuiGePanelCallBack (data) {
+        var dataRows = data.data.iteminfolist;
+        var libaotablehtm = "";
+        $(".libaoguige-table").html(libaotablehtm);
+        if(dataRows != null && dataRows.length > 0) {
+            // alert(dataRows.length);
+            for(var i = 0; i<dataRows.length; i++ ) {
+                var drow = dataRows[i];
+                //libaotablehtm += "<tr><td>"+drow.riitemname+"</td>";
+                if(drow.ritype == 1) { //现金
+                    var totalPrice = parseInt(drow.pircount)*parseFloat(drow.ripmarketprice);
+                    libaotablehtm += "<tr><td>"+ drow.pircount +"张"+ totalPrice +"元"+  drow.riitemname +"</td></tr>";
+                } else {
+                    libaotablehtm += "<tr><td>"+ drow.pircount +"张"+  drow.riitemname +"</td></tr>";
+                }
+                //libaotablehtm += "</tr>";
+            } 
+        }
+        $(".libaoguige-table").html(libaotablehtm);
+        $('#liBaoGuiGeModal').modal('show');
+    }
+</script>

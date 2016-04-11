@@ -1,0 +1,227 @@
+
+<div class="container">
+    <table id="table-self-view6"></table>
+</div>
+<input id="pop" type = "button" value = "test" ng-click="clickToAddress()">
+<script>
+    var queryData = {};
+    var httputil = new jsutil(httpurl);
+    var authinfo =   httputil.getauthinfo();
+
+    $(function () {
+        $('#table-self-view6').bootstrapTable( {
+            method: 'get',
+            url: httpurl + '/morder/QueryMemOrderBeanList?data='+authinfo,
+            height: 600,
+            width:500,
+            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "cmoid",
+            sortOrder: "desc",
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            // queryParams: fnQueryParams,
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            search: true,  //搜索
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'cmoid',
+                title: 'cmoid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle'
+            }, {
+                field: 'cmorderdate',
+                title: '日期',
+                width: 100,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: cmorderdateFormatter
+            }, {
+                field: 'cmordertime',
+                title: '时间',
+                width: 100,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: cmordertimeFormatter
+            }, {
+                field: 'cmotsid',
+                title: 'cmotsid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle'
+            },{
+                field: 'tsname',
+                title: '员工',
+                sortable: true,
+                width: 100,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: tsnameFormatter
+            }, {
+                field: 'tstelno',
+                title: '电话',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmostoreid',
+                title: 'cmostoreid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle'
+            },{
+                field: 'sstorename',
+                title: '门店',
+                width: 200,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: sstorenameFormatter
+            }, {
+                field: 'stel',
+                title: '门店电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'saddress',
+                title: '地址',
+                width: 300,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            },{
+                field: 'operate',
+                title: '操作',
+                width: 180,
+                align: 'center',
+                valign: 'middle',
+                formatter: operateFormatter
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+ 
+  
+            },
+            onLoadError: function () {
+            }
+          
+        });
+    });
+
+    function cmorderdateFormatter(value, row) {
+        var fmthtm = value ;
+        fmthtm += '<a href="javascript: void(0);" onclick="fnUpdatePartInfo('+row.cmoid+',1);" >'+
+                  '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        return fmthtm;
+    }
+    function cmordertimeFormatter(value, row) {
+        var fmthtm = value ;
+        fmthtm += '<a href="javascript: void(0);" onclick="fnUpdatePartInfo('+row.cmoid+',2);">'+
+                '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        return fmthtm;
+    }
+
+    function tsnameFormatter(value, row) {
+        var fmthtm = value ;
+        fmthtm += '<a href="javascript: void(0);" onclick="fnUpdatePartInfo('+row.cmoid+',3);">'+
+                '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        return fmthtm;
+    }
+
+    function sstorenameFormatter(value, row) {
+        var fmthtm = value ;
+        fmthtm += '<a href="javascript: void(0);" onclick="fnUpdatePartInfo('+row.cmoid+',4);">'+
+                '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        return fmthtm;
+    }
+
+    function operateFormatter(value, row) {
+       var opthtm = '<button type="button" class="btn btn-default btn-xs" onclick="cancelmorder('+row.cmoid+')">'+
+                    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>取消</button>';
+        return opthtm;
+    }
+
+    function cancelmorder(cmoid) {
+        var y = confirm("确认取消吗");
+        if(y) {
+            var jsonpara = {};
+            jsonpara.cmoid = cmoid;
+//            httputil.httpget("/propertyins/DelCustCarPkg", jsonpara, cancelmorderCallBack);
+            
+        }
+    }
+
+    function cancelmorderCallBack(data) {
+        if(data.status >= 0) {
+            alert("取消成功");
+            $('#table-self-view6').bootstrapTable('refresh',{url:httpurl + '/propertyins/QueryWxCustCarInsuInfo?data='+authinfo});
+        } else {
+            alert("取消失败");
+        }
+    }
+
+    function fnUpdatePartInfo(cmoid,utype) {
+        var jsonpara = {};
+        jsonpara.cmoid = cmoid;
+        jsonpara.utype = utype;
+        httputil.httpget("/morder/GetOrderPartInfo", jsonpara, fnUpdatePartInfoCallBack);
+    }
+
+    function fnUpdatePartInfoCallBack (data) {
+        var dataRows = data.orderMonth;
+        console.log(data);
+        $("#pop").click();
+        setTimeout(function(){
+            var mainObj = new mObj();
+            mainObj.init(data.data);
+        },100);
+    }
+
+
+</script>

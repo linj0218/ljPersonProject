@@ -1,0 +1,1395 @@
+
+<style type="text/css">
+    .mt5 {
+        margin-top: 5px;
+    }
+    .w125 {width: 125px;}
+    .w450 {width: 450px;}
+</style>
+<div class="container">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#sstatus0" data-toggle="tab">已入网</a></li>
+        <li><a href="#sstatus1" data-toggle="tab">退网申请</a></li>
+        <li><a href="#sstatus2" data-toggle="tab">已退网</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="sstatus0">
+            <div id="toolbar-self" class="btn-group">
+               <button id="btn_add" type="button" class="btn btn-default" onclick="openStoreEditModel();">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+               </button>
+            </div>
+            <table class="table-servstore"></table>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="storeEditModal" tabindex="-1" role="dialog"
+               aria-labelledby="storeEditModalLabel" aria-hidden="true" data-backdrop="static">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                           aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="storeEditModalLabel">
+                           编辑
+                        </h4>
+                     </div>
+                     <div class="modal-body">
+                        <div style="margin:auto;">
+                           <form class="bs-example bs-example-form" role="form">
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">门店名称：</span>
+                                  <input type="hidden" class="sid">
+                                  <input type="hidden" class="sstoreid">
+                                 <input type="hidden" class="sport">
+                                 <input type="text" class="form-control sstorename w450" placeholder="点击选择门店" readonly="readonly" style="width: 450px;" onclick="openStore();">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">联系人：</span>
+                                 <input type="text" class="form-control slinkman" placeholder="请输入联系人" style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">联系电话：</span>
+                                 <input type="text" class="form-control stel" placeholder="请输入联系电话" style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">联系地址：</span>
+                                 <input type="text" class="form-control saddress" placeholder="请输入联系地址" style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">BD：</span>
+                                 <input type="hidden" class="sbdid">
+                                 <input type="text" class="form-control sbdname" style="width: 450px;" placeholder="点击选择BD" readonly="readonly" style="width: 450px;" onclick="opensBdModel();">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">BD电话：</span>
+                                 <input type="text" class="form-control sbdcontactway"  style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">区域名称：</span>
+                                 <input type="hidden" class="sregioncode">
+                                 <input type="text" class="form-control sregionname" style="width: 450px;" placeholder="点击选择区域" readonly="readonly" style="width: 450px;" onclick="opensRegion();">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">经度：</span>
+                                 <input type="text" class="form-control slng" style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">纬度：</span>
+                                 <input type="text" class="form-control slat" style="width: 450px;">
+                              </div>
+                              <div class="input-group mt5">
+                                 <span class="input-group-addon w125">选择项目：</span>
+                                 <input type="hidden" class="itemids">
+                                 <input type="text" class="form-control itemnames" style="width: 450px;" placeholder="点击选择项目" readonly="readonly" style="width: 450px;" onclick="opensRepairItem();">
+                              </div>
+
+                           </form>
+                        </div>
+
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                           data-dismiss="modal">
+                           关闭
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnSaveStore" onclick="saveStore();">
+                           提交
+                        </button>
+                     </div>
+                  </div><!-- /.modal-content -->
+               </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            <div class="modal fade" id="selectstoreModal" tabindex="-1" role="dialog"
+                 aria-labelledby="selectstoreModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="selectstoreModalLabel">
+                                选择店铺
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div style="margin:auto;">
+                                <table id="table-selectstore"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="fnselectstore();">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="selectrBdModal" tabindex="-1" role="dialog"
+                 aria-labelledby="selectrBdModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="selectrBdModalLabel">
+                                选择BD
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div style="margin:auto;">
+                                <table id="table-selectbd"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="fnselectBd();">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="selectregionModal" tabindex="-1" role="dialog"
+                 aria-labelledby="selectregionModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="selectregionModalLabel">
+                                选择区域
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div style="margin:auto;">
+                                <table id="table-selectregion"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary"  onclick="fnselectregio();">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="selectrepairItemModal" tabindex="-1" role="dialog"
+                 aria-labelledby="selectrepairItemModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">×
+                            </button>
+                            <h4 class="modal-title" id="selectrepairItemModalLabel">
+                                选择项目
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div style="margin:auto;">
+                                <table id="table-selectrepairitem"></table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="fnselectRepairItem();">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="sstatus1">
+            <table class="table-servstore1"></table>
+        </div>
+        <div class="tab-pane fade" id="sstatus2">
+            <table class="table-servstore2"></table>
+        </div>
+    </div>
+</div>
+<script>
+    var contentPath = httpurl;
+    var httputil = new jsutil(httpurl);
+    var authinfo =   httputil.getauthinfo();
+    var repairItemIds = [];
+    var queryStoreinfoURL = contentPath + '/storectl/QueryStoreInfoBeanList?data='+authinfo;
+    $(function () {
+
+        storeInit("");
+        regionInit("");
+        repairItemInit("");
+        bdtableInit("");
+        tableServstoreInit1("");
+        tableServstoreInit2("");
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            // 获取已激活的标签页的名称
+            var activeTab = $(e.target).text();
+            if(activeTab === "已入网"){
+                $('.table-servstore1').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=0'});
+            }else if(activeTab === "退网申请"){
+                $('.table-servstore1').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=1'});
+            }else if(activeTab === "已退网"){
+                $('.table-servstore2').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=2'});
+            }
+        });
+
+//        $('#storeEditModal').modal({backdrop: false});
+//        $('#selectstoreModal').modal({backdrop: false, show: false});
+//        $('#selectregionModal').modal({backdrop: false, show: false});
+//        $('#selectrepairItemModal').modal({backdrop: false, show: false});
+
+        $('.table-servstore').bootstrapTable( {
+            method: 'get',
+            url: queryStoreinfoURL+'&sstatus=0',
+            height: 600,
+            width:500,
+            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize: 10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "sid",
+            sortOrder: "desc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'sid',
+                title: 'sid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            }, {
+                field: 'sstoreid',
+                title: 'sstoreid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            },{
+                field: 'sstorename',
+                title: '门店名称',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'slinkman',
+                title: '联系人',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'stel',
+                title: '电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'saddress',
+                title: '地址',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdname',
+                title: 'BD',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdcontactway',
+                title: 'BD电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sstatus',
+                title: '状态',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: function(value, row, index){
+                    if(value == 0){
+                        return "已入网";
+                    }else if(value == 1){
+                        return "退网待定";
+                    }else if(value == 2){
+                        return "已退网";
+                    }
+                }
+            }, {
+                field: 'sstatusname',
+                title: '退网申请',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: false,
+                formatter: logOutFormatter
+            }, {
+                field: 'entercount',
+                title: '当月服务流量',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'servicesrate',
+                title: '当月服务评价',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'operate',
+                title: '操作',
+                width: 100,
+                align: 'center',
+                valign: 'middle',
+                formatter: operateFormatter
+                //events: operateEvents
+ 
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+ 
+  
+            },
+            onLoadError: function () {
+ 
+                 //mif.showErrorMessageBox("数据加载失败！");
+ 
+            }
+          
+            });
+            //$('#table').bootstrapTable('refresh',{url:'http://192.168.1.68:3030/propertyins/QueryWxCustCarInsuInfo'});
+    });
+
+    function logOutFormatter(value, row, index) {
+        var opthtm = "";
+        var tip = "";
+        if(row.sstatus == 0){
+            tip = "退网申请";
+            opthtm = '<button type="button" class="btn btn-default btn-xs" onclick="logOutApply('+row.sid+', 1, \''+tip+'\')">'+
+            '<span class="glyphicon glyphicon-backward" aria-hidden="true"></span>'+tip+'</button>';
+        }
+        if(row.sstatus == 1){
+            tip = "退网确认";
+            opthtm = '<button type="button" class="btn btn-default btn-xs" onclick="logOutApply('+row.sid+', 2, \''+tip+'\')">'+
+                    '<span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>'+tip+'</button>';
+        }
+        return opthtm;
+    }
+
+    function logOutApply(sid, sstatus, msgtip) {
+        var y = confirm("确认"+msgtip);
+        if(y){
+            var jsonpara = {};
+            jsonpara.sid = sid;
+            jsonpara.sstatus = sstatus;
+            httputil.httpget("/storectl/UpdateCcStoreSstatus", jsonpara, function(data){
+                if(data.status > 0){
+                    alert(msgtip+"成功");
+                }else{
+                    alert(msgtip+"失败");
+                }
+                $('.table-servstore').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=0'});
+                $('.table-servstore1').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=1'});
+                $('.table-servstore2').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=2'});
+            });
+        }
+    }
+
+    function logOutApplyCallback(data) {
+         if(data.status > 0){
+             alert("退网申请成功");
+         }else{
+             alert("退网申请失败");
+         }
+         $('.table-servstore').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=0'});
+    }
+
+    function operateFormatter(value, row) {
+        var opthtm = '<button type="button" class="btn btn-default btn-xs" onclick="uploadStore('+row.sid+')">'+
+        '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改</button>';
+        return opthtm;
+    }
+
+    function uploadStore(sid) {
+
+        var jsonpara = {};
+        jsonpara.sid = sid;
+        httputil.httpget("/storectl/GetCcStore", jsonpara, uploadStoreCallback);
+    }
+
+    function uploadStoreCallback(data) {
+        var storeinfo = data.data;
+        for(var columnname in storeinfo){
+            if(isNaN(columnname)){
+                $("."+columnname).val(storeinfo[columnname]);
+            }
+        }
+        repairItemIds = [];
+        repairItemIds = storeinfo.itemids.split(",");
+        //alert(repairItemIds);
+        $('#storeEditModal').modal('show');
+    }
+
+    function openStoreEditModel(){
+        $('#storeEditModal input').val("");
+        $('#storeEditModal').modal('show');
+    }
+
+    var saveflg = 0;
+    function saveStore() {
+        var reqjson = {};
+        var sid = $(".sid").val();
+        var sstoreid = $(".sstoreid").val();
+        var sstorename = $(".sstorename").val();
+        var sport = $(".sport").val();
+        var slinkman = $(".slinkman").val();
+        var stel = $(".stel").val();
+        var saddress  = $(".saddress").val();
+        var sbdid = $(".sbdid").val();
+        var sbdname = $(".sbdname").val();
+        var sbdcontactway = $(".sbdcontactway").val();
+        var sregioncode = $(".sregioncode").val();
+        var sregionname = $(".sregionname").val();
+        var slng = $(".slng").val();
+        var slat = $(".slat").val();
+//        if($.trim(cmemname).length == 0){
+//            alert("请输入车主姓名");
+//            return;
+//        }
+//        if($.trim(cmemtel).length == 0){
+//            alert("请输入车联系电话");
+//            return;
+//        }
+//        if($.trim(cmemcarplate).length == 0){
+//            alert("请输入车牌号");
+//            return;
+//        }
+//        if($.trim(cmcvin).length == 0){
+//            alert("请输入车辆识别码");
+//            return;
+//        }
+//        if(isNaN(cciiinsuprice)){
+//            alert("请输入正确的保单金额");
+//            return;
+//        }
+        if(isNaN(sstoreid)){
+            sstoreid = 0;
+        }
+
+        var requrl = "/storectl/AddCcStore";
+        if (sid > 0) {
+            sid = parseInt(sid);
+            requrl = "/storectl/UpdateCcStore";
+            saveflg = 1;
+        }else{
+            sid = parseInt(0);
+        }
+        var store = {};
+        store.sid = sid;
+        store.sstoreid = parseInt(sstoreid);
+        store.sstorename = sstorename;
+        store.sport = sport;
+        store.slinkman = slinkman;
+        store.stel = stel;
+        store.saddress = saddress;
+        store.sbdid = parseInt(sbdid);
+        store.sbdname = sbdname;
+        store.sbdcontactway = sbdcontactway;
+        store.sregioncode = sregioncode;
+        store.sregionname = sregionname;
+        store.slng = slng;
+        store.slat = slat;
+        var items = [];
+        if(repairItemIds.length > 0){
+            for(var i = 0; i<repairItemIds.length; i++){
+                var repairObj = {};
+                repairObj.siritemid = parseInt(repairItemIds[i]);
+                items.push(repairObj);
+            }
+
+        }
+        reqjson.ccstore = store;
+        reqjson.itemlist  = items;
+        var jsondata = JSON.stringify(reqjson);
+        //console.log(jsondata);
+       // $("#btnSaveStore").addClass("disabled");
+        httputil.httpget(requrl, reqjson, saveStoreCallBack);
+
+    }
+
+    function saveStoreCallBack (data) {
+        if(data.status > 0){
+            alert("提交成功");
+            $('#storeEditModal').modal('hide');
+            $('#storeEditModal input').val("");
+            $('.table-servstore').bootstrapTable('refresh',{url: queryStoreinfoURL+'&sstatus=0'});
+        }else{
+            if(saveflg == 1){
+                if(data.status == -20){
+                    alert("当前保费部分优惠券已被使用，不能修改");
+                }else if(data.status == -30){
+                    alert("当前记录不存在，不能修改");
+                }else if(data.status == -40){
+                    alert("会员信息不存在，不能修改");
+                }else if(data.status == -50){
+                    alert("车辆信息不存在，不能修改");
+                }  else {
+                    alert("提交失败");
+                }
+            }else{
+                alert("提交失败");
+            }
+        }
+        $("#btnSaveStore").removeClass("disabled");
+    }
+
+
+    function openStore() {
+        var qurl = contentPath + '/storectl/QueryWebserverList?data='+authinfo;
+        $('#table-selectstore').bootstrapTable('refresh', {url: qurl});
+        $('#selectstoreModal').modal('show');
+    }
+    
+    function storeInit(url) {
+        $('#table-selectstore').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            clickToSelect: true,	//数据行真正的点击行时，选择复选框或radiobox。
+            singleSelect: true,     //是否单选
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            search: true,
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'webserverid',
+                title: '门店ID',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'shopname',
+                title: '门店名称',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'webserverhostname',
+                title: 'webserverhostname',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'citycode',
+                title: 'citycode',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'webserverportno',
+                title: '端口号',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            }
+
+        });
+    }
+    
+    function fnselectstore() {
+        var getRowData = $('#table-selectstore').bootstrapTable('getSelections');
+        $(".sstoreid").val(getRowData[0].webserverid);
+        $(".sstorename").val(getRowData[0].shopname);
+        $(".sport").val(getRowData[0].webserverportno);
+        $('#selectstoreModal').modal('hide');
+    }
+
+    function opensRegion() {
+        var qurl = contentPath + '/storectl/QueryRegionList?data='+authinfo;
+        $('#table-selectregion').bootstrapTable('refresh', {url: qurl});
+        $('#selectregionModal').modal('show');
+    }
+
+    function regionInit(url) {
+        $('#table-selectregion').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            clickToSelect: true,	//数据行真正的点击行时，选择复选框或radiobox。
+            singleSelect: true,     //是否单选
+            pagination: false,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            search: true,
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'acid',
+                title: 'acid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'accityname',
+                title: '区域',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'accode',
+                title: '区域代码',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'aclat',
+                title: '纬度',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'aclng',
+                title: '经度',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            },
+            onSearch: function(text) {
+                var qurl = contentPath + '/storectl/QueryRegionList?data='+ authinfo +'&address='+text;
+                $('#table-selectregion').bootstrapTable('refresh', {url: qurl});
+            }
+
+        });
+    }
+
+    function fnselectregio() {
+        var getRowData = $('#table-selectregion').bootstrapTable('getSelections');
+        $(".sregioncode").val(getRowData[0].accode);
+        $(".sregionname").val(getRowData[0].accityname);
+        $(".slng").val(getRowData[0].aclng);
+        $(".slat").val(getRowData[0].aclat);
+        $('#selectregionModal').modal('hide');
+    }
+
+    function opensRepairItem() {
+        var qurl = contentPath + '/storectl/QueryWxRepairItemList?data='+authinfo;
+        $('#table-selectrepairitem').bootstrapTable('refresh', {url: qurl});
+        $('#selectrepairItemModal').modal('show');
+    }
+
+    function repairItemInit(url) {
+        $('#table-selectrepairitem').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            clickToSelect: true,	//数据行真正的点击行时，选择复选框或radiobox。
+            singleSelect: false,     //是否单选
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            search: true,
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'riid',
+                title: '项目',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'riitemname',
+                title: '项目名称',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'ripmarketprice',
+                title: '市场价格',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            },
+            onSearch: function(text) {
+                var qurl = contentPath + '/storectl/QueryWxRepairItemList?data='+ authinfo +'&address='+text;
+                $('#table-selectrepairitem').bootstrapTable('refresh', {url: qurl});
+            }
+
+        });
+    }
+
+    function fnselectRepairItem() {
+        repairItemIds.length = 0; //清空js数组
+        var getRowData = $('#table-selectrepairitem').bootstrapTable('getSelections');
+        var repairItemName = "";
+        if(getRowData.length > 0){
+            for(var i = 0; i<getRowData.length; i++ ){
+                var checkedRow = getRowData[i];
+                repairItemIds.push(checkedRow.riid);
+                repairItemName += "，" + checkedRow.riitemname;
+            }
+            if(repairItemName.length > 0){
+                repairItemName = repairItemName.substring(1);
+            }
+        }
+        $(".itemids").val(repairItemIds);
+        $(".itemnames").val(repairItemName);
+        $('#selectrepairItemModal').modal('hide');
+    }
+
+    function opensBdModel() {
+        var qurl = contentPath + '/storectl/QueryBdOperatorlist?data='+authinfo+"&cityname=''";
+        $('#table-selectbd').bootstrapTable('refresh', {url: qurl});
+        $('#selectrBdModal').modal('show');
+    }
+
+    function bdtableInit(url) {
+        $('#table-selectbd').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            clickToSelect: true,	//数据行真正的点击行时，选择复选框或radiobox。
+            singleSelect: true,     //是否单选
+            pagination: false,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            search: true,
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'userid',
+                title: 'userid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'username',
+                title: 'BD姓名',
+                width: 120,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'phone',
+                title: 'BD电话',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            },
+            onSearch: function(text) {
+                var qurl = contentPath + '/storectl/QueryBdOperatorlist?data='+ authinfo+"&cityname="+text;
+                $('#table-selectbd').bootstrapTable('refresh', {url: qurl});
+            }
+
+        });
+    }
+
+    function fnselectBd() {
+        var getRowData = $('#table-selectbd').bootstrapTable('getSelections');
+        $(".sbdid").val(getRowData[0].userid);
+        $(".sbdname").val(getRowData[0].username);
+        $(".sbdcontactway").val(getRowData[0].phone);
+        $('#selectrBdModal').modal('hide');
+    }
+
+    function tableServstoreInit1(url){
+        $('.table-servstore1').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize: 10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "sid",
+            sortOrder: "desc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'sid',
+                title: 'sid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            }, {
+                field: 'sstoreid',
+                title: 'sstoreid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            },{
+                field: 'sstorename',
+                title: '门店名称',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'slinkman',
+                title: '联系人',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'stel',
+                title: '电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'saddress',
+                title: '地址',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdname',
+                title: 'BD',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdcontactway',
+                title: 'BD电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sstatus',
+                title: '状态',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: function(value, row, index){
+                    if(value == 0){
+                        return "已入网";
+                    }else if(value == 1){
+                        return "退网待定";
+                    }else if(value == 2){
+                        return "已退网";
+                    }
+                }
+            }, {
+                field: 'sstatusname',
+                title: '退网确认',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: false,
+                formatter: logOutFormatter
+            }, {
+                field: 'entercount',
+                title: '当月服务流量',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'servicesrate',
+                title: '当月服务评价',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            }
+
+        });
+    }
+
+    function tableServstoreInit2(url){
+        $('.table-servstore2').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+//            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize: 10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "sid",
+            sortOrder: "desc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'sid',
+                title: 'sid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            }, {
+                field: 'sstoreid',
+                title: 'sstoreid',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+            },{
+                field: 'sstorename',
+                title: '门店名称',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'slinkman',
+                title: '联系人',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'stel',
+                title: '电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'saddress',
+                title: '地址',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdname',
+                title: 'BD',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sbdcontactway',
+                title: 'BD电话',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'sstatus',
+                title: '状态',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true,
+                formatter: function(value, row, index){
+                    if(value == 0){
+                        return "已入网";
+                    }else if(value == 1){
+                        return "退网待定";
+                    }else if(value == 2){
+                        return "已退网";
+                    }
+                }
+            }, {
+                field: 'entercount',
+                title: '当月服务流量',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'servicesrate',
+                title: '当月服务评价',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+
+
+            },
+            onLoadError: function () {
+
+                //mif.showErrorMessageBox("数据加载失败！");
+
+            }
+
+        });
+    }
+</script>

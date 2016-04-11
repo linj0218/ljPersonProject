@@ -1,0 +1,637 @@
+
+<style type="text/css">
+    .mt5 {
+        margin-top: 5px;
+    }
+    .w125 {width: 125px;}
+    .w450 {width: 450px;}
+</style>
+<div class="container">
+    <div class="panel-body" style="padding-bottom:0px;">
+      <div class="panel panel-default">
+        <div class="panel-heading">查询条件</div>
+          <div class="panel-body">
+            <form id="formSearch" class="form-horizontal">
+              <div class="form-group" style="margin-top:15px">
+                <label class="control-label col-sm-1" for="txt_search_departmentname">统计日期</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="startdate" placeholder="起始日期">
+                </div>
+                <div class="col-sm-3">
+                 <input type="text" class="form-control" id="enddate" placeholder="结束日期">
+                </div>
+                <div class="col-sm-4" style="text-align:left;">
+                  <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary" onclick="fuQuery();">查询</button>
+                </div>
+              </div>
+            </form>
+         </div>
+      </div> 
+     <table id="table-report"></table>
+
+    </div>
+
+    <div class="modal fade" id="sendCountModal" tabindex="-1" role="dialog" 
+       aria-labelledby="sendCountModalLabel" aria-hidden="true">
+       <div class="modal-dialog" style="width:1000px;">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="sendCountModalLabel">发放客户</h4>
+             </div>
+             <div class="modal-body">
+                <div style="margin:auto;">
+                    <table class="table sendcust-table"></table>
+                </div>
+
+             </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                   data-dismiss="modal">
+                   关闭
+                </button>
+             </div>
+          </div>
+       </div>
+    </div>
+
+    <div class="modal fade" id="useCountModal" tabindex="-1" role="dialog" 
+       aria-labelledby="useCountModalLabel" aria-hidden="true">
+       <div class="modal-dialog" style="width:1000px;">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="useCountModalLabel">使用明细</h4>
+             </div>
+             <div class="modal-body">
+                <div style="margin:auto;">
+                     <div id="toolbar-usedetail" class="btn-group">
+                       <span data-toggle="tooltip">总计：<span class="useDetailTotal"></span>元</span>
+                    </div>
+                    <table class="table usedetail-table"></table>
+                </div>
+
+             </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                   data-dismiss="modal">
+                   关闭
+                </button>
+             </div>
+          </div>
+       </div>
+    </div>
+
+    <div class="modal fade" id="liBaoGuiGeModal" tabindex="-1" role="dialog" 
+       aria-labelledby="liBaoGuiGeModalLabel" aria-hidden="true">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="liBaoGuiGeModalLabel">礼包规格</h4>
+             </div>
+             <div class="modal-body">
+                <div style="margin:auto;">
+                    <table class="table libaoguige-table"></table>
+                </div>
+
+             </div>
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" 
+                   data-dismiss="modal">
+                   关闭
+                </button>
+             </div>
+          </div>
+       </div>
+    </div>
+
+</div>
+<script>
+    var contentPath = httpurl;
+    var httputil = new jsutil(httpurl);
+    var authinfo =   httputil.getauthinfo();
+    $(function () {
+        
+        sendCustinfoInit("");  //发放客户详情
+        useCountDetailInit(""); //使用详情
+
+        $("#startdate").datetimepicker({
+           format: 'yyyy-mm-dd',  
+           weekStart: 1,  
+           autoclose: true,  
+           startView: 2,  
+           minView: 2,  
+           forceParse: false,  
+           language: 'zh-CN' 
+        });
+
+        $("#enddate").datetimepicker({
+           format: 'yyyy-mm-dd',  
+           weekStart: 1,  
+           autoclose: true,  
+           startView: 2,  
+           minView: 2,  
+           forceParse: false,  
+           language: 'zh-CN' 
+        });
+
+        $('#table-report').bootstrapTable( {
+            method: 'get',
+            url: contentPath + '/propertyins/QueryInsuReportList?data='+authinfo,
+            height: 600,
+            width:500,
+            // toolbar: '#toolbar-report',    //工具按钮用哪个容器
+            striped: true,
+            pagination: false,
+            pageList: [10,20,50],
+            pageSize:10,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            queryParams: fnQueryParams,
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            showColumns: false,
+            showRefresh: true,     //是否显示刷新按钮
+            showFooter: true,  //是否显示页脚
+            columns: [ {
+                field: 'istotalflg',
+                title: '是否汇总：1是',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+            }, {
+                field: 'ymdisp',
+                title: '年月',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+            },{
+                field: 'ym',
+                title: '年月',
+                visible: false, //隐藏列
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                // formatter: runningFormatter,
+                footerFormatter:totalTextFormatter
+            }, {
+                field: 'sendcount',
+                title: '礼包发放客户数量',
+                sortable: true,
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: sendcountFormatter,
+                footerFormatter:totalFormatter
+            }, {
+                field: 'usecount',
+                title: '当月使用次数',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: usecountFormatter,
+                footerFormatter: totalTextFormatter
+            }, {
+                field: 'useprice',
+                title: '当月使用金额',
+                width: 80,
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: usepriceFormatter,
+                footerFormatter: totalTextFormatter
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+ 
+  
+            },
+            onLoadError: function () {
+ 
+                 //mif.showErrorMessageBox("数据加载失败！");
+ 
+            }
+          
+            });
+            //$('#table').bootstrapTable('refresh',{url:'http://192.168.1.68:3030/propertyins/QueryWxCustCarInsuInfo'});
+
+    });
+
+    function fnQueryParams(params) {
+       var startdate = $.trim($("#startdate").val());
+       var enddate = $.trim($("#enddate").val());
+       if(startdate.length > 0){
+          startdate = startdate.replace(/-/g, "");
+       }
+       if(enddate.length > 0){
+          enddate = enddate.replace(/-/g, "");
+       }
+       var param = {
+          limit: params.limit, //页面大小
+          offset: params.offset, //页码
+          startdate: startdate,
+          enddate: enddate
+       }
+       return param;
+    }
+    
+    function fuQuery(){
+       var startdate = $.trim($("#startdate").val());
+       var enddate = $.trim($("#enddate").val());
+       if(startdate.length > 0){
+          startdate = startdate.replace(/-/g, "");
+       }
+       if(enddate.length > 0){
+          enddate = enddate.replace(/-/g, "");
+       }
+
+       var qurl = contentPath + '/propertyins/QueryInsuReportList?data='+authinfo+'&startdate='+startdate+'&enddate='+enddate;
+       $('#table-report').bootstrapTable('refresh', {url: qurl});
+    }
+
+    function sendcountFormatter(value, row, index) {
+       var rtnhtm = value;
+       if(value > 0) {
+           rtnhtm = '<a href="javascript: void(0);" onclick="fnSendCountDetail('+row.istotalflg +', 1, \''+row.ym+'\');">'+value+'</a>';
+       }
+       return rtnhtm;
+    }
+
+    function fnSendCountDetail(istotalflg, colflg, statym) {
+        var qurl = contentPath + '/propertyins/QueryWxCustCarInsuInfoReportDetail?data='+authinfo+'&istotalflg='+istotalflg+'&colflg='+colflg+'&statym='+statym;
+        $('.sendcust-table').bootstrapTable('refresh', {url: qurl});
+        $("#sendCountModal").modal('show');
+    }
+
+    function usecountFormatter(value, row, index) {
+       var rtnhtm = value;
+       if(value > 0) {
+           rtnhtm = '<a href="javascript: void(0);" onclick="fnUseCountDetail('+row.istotalflg +', 2, \''+row.ym+'\');">'+value+'</a>';
+       }
+       return rtnhtm;
+    }
+
+    function fnUseCountDetail(istotalflg, colflg, statym) {
+        var qurl = contentPath + '/propertyins/QueryWxCustCarInsuInfoReportDetail?data='+authinfo+'&istotalflg='+istotalflg+'&colflg='+colflg+'&statym='+statym;
+        $('.usedetail-table').bootstrapTable('refresh', {url: qurl});
+        $("#useCountModal").modal('show');
+    }
+
+    function usepriceFormatter(value, row, index) {
+       var rtnhtm = value;
+       if(value > 0) {
+           rtnhtm = '<a href="javascript: void(0);" onclick="fnUsepriceDetail('+row.istotalflg +', 3, \''+row.ym+'\');">'+value+'</a>';
+       }
+       return rtnhtm;
+    }
+
+    function fnUsepriceDetail(istotalflg, colflg, statym) {
+       fnUseCountDetail(istotalflg, 3, statym);
+    }
+
+    function runningFormatter(value, row, index) {
+       return index;
+    }
+
+    function totalTextFormatter(data) {
+        return 'Total';
+    }
+
+    function totalFormatter(data) {
+        return data.length;
+    }
+
+    function sumFormatter(data) {
+        field = this.field;
+        return data.reduce(function(sum, row) { 
+            return sum + (+row[field]);
+        }, 0);
+    }
+
+    function avgFormatter(data) {
+        return sumFormatter.call(this, data) / data.length;
+    }
+    
+
+    function sendCustinfoInit(url) {
+       $('.sendcust-table').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+            toolbar: '#toolbar-self',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:20,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortName: "cciiid",
+            sortOrder: "desc",
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            // queryParams: fnQueryParams,
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            search: true,
+            showColumns: false,
+            showRefresh: false,     //是否显示刷新按钮
+            showFooter: false,
+            columns: [{
+                field: 'cciipatchdate',
+                title: '批次',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemname',
+                title: '车主姓名',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemtel',
+                title: '联系方式',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemcarplate',
+                title: '车牌号',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemcartype',
+                title: '车型',
+                width: 500,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciiinsustartdate',
+                title: '保单生效日期',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciiinsuprice',
+                title: '商业险金额',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cciirpkgprice',
+                title: '礼包规格',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true,
+                formatter: cciirpkgpriceFormatter
+            },{
+                field: 'cciicreatetime',
+                title: '礼包发放日期',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(){
+                
+  
+            },
+            onLoadError: function () {
+ 
+                 //mif.showErrorMessageBox("数据加载失败！");
+ 
+            }
+          
+        });
+    }
+
+    function cciirpkgpriceFormatter(value, row) {
+        var fmthtm = value ;
+        if(value > 0) {
+            fmthtm += '<a href="javascript: void(0);" onclick="fnLibaoGuiGePanel('+row.cciiinsuprice+');">'+
+                      '<span class="glyphicon glyphicon-file" aria-hidden="true"></span></a>';
+        }
+        return fmthtm;
+    }
+
+    function fnLibaoGuiGePanel(cciiinsuprice) {
+        if(cciiinsuprice <= 0) {
+            return;
+        }
+        var jsonpara = {};
+        jsonpara.pprice = cciiinsuprice;
+        httputil.httpget("/propertyins/GetPremItemCust", jsonpara, fnLibaoGuiGePanelCallBack);
+    }
+
+    function fnLibaoGuiGePanelCallBack (data) {
+        var dataRows = data.data.iteminfolist;
+        var libaotablehtm = "";
+        $(".libaoguige-table").html(libaotablehtm);
+        if(dataRows != null && dataRows.length > 0) {
+            // alert(dataRows.length);
+            for(var i = 0; i<dataRows.length; i++ ) {
+                var drow = dataRows[i];
+                //libaotablehtm += "<tr><td>"+drow.riitemname+"</td>";
+                if(drow.ritype == 1) { //现金
+                    var totalPrice = parseInt(drow.pircount)*parseFloat(drow.ripmarketprice);
+                    libaotablehtm += "<tr><td>"+ drow.pircount +"张"+ totalPrice +"元"+  drow.riitemname +"</td></tr>";
+                } else {
+                    libaotablehtm += "<tr><td>"+ drow.pircount +"张"+  drow.riitemname +"</td></tr>";
+                }
+                //libaotablehtm += "</tr>";
+            } 
+        }
+        $(".libaoguige-table").html(libaotablehtm);
+        $('#liBaoGuiGeModal').modal('show');
+    }
+
+    function useCountDetailInit(url) {
+       $('.usedetail-table').bootstrapTable( {
+            method: 'get',
+            url: url,
+            height: 600,
+            width:500,
+            toolbar: '#toolbar-usedetail',    //工具按钮用哪个容器
+            striped: true,
+            pagination: true,
+            pageList: [10,20,50],
+            pageSize:20,
+            pageNumber:1,
+            sortable: true,      //是否启用排序
+            sortOrder: "asc",     //排序方式
+            dataType: "jsonp",
+            jsonp: 'callback',
+            dataField: "rows",
+            // queryParams: fnQueryParams,
+            queryParamsType: "limit",
+            sidePagination:'server',//设置为服务器端分页
+            contentType: "application/x-www-form-urlencoded",
+            search: true,
+            showColumns: false,
+            showRefresh: false,     //是否显示刷新按钮
+            showFooter: true,
+            columns: [{
+                field: 'circreatedate',
+                title: '发放日期',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'riitemname',
+                title: '优惠券名称',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'cmemcarplate',
+                title: '车牌',
+                sortable: true,
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'ciruseddate',
+                title: '使用日期',
+                width: 80,
+                align: 'left',
+                valign: 'middle',
+                sortable: true
+            }, {
+                field: 'ripstoreprice',
+                title: '结算金额',
+                width: 80,
+                align: 'right',
+                valign: 'middle',
+                sortable: true
+            }],
+            formatLoadingMessage: function () {
+                return '正在努力地加载数据中，请稍候……';
+            },
+            formatRecordsPerPage: function (pageNumber) {
+                return '每页显示 ' + pageNumber + ' 条记录';
+            },
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return '显示第 ' + pageFrom + ' 到第 ' + pageTo + ' 条记录，总共 ' + totalRows + ' 条记录';
+            },
+            formatSearch: function () {
+                return '搜索';
+            },
+            formatNoMatches: function () {
+                return '没有找到匹配的记录';
+            },
+            formatPaginationSwitch: function () {
+                return '隐藏/显示分页';
+            },
+            formatRefresh: function () {
+                return '刷新';
+            },
+            formatToggle: function () {
+                return '切换';
+            },
+            formatColumns: function () {
+                return '列';
+            },
+            onLoadSuccess:function(data){
+//                var usePriceTotal = 0;
+//                if(data.length > 0) {
+//                  for(var i = 0; i<data.length; i++) {
+//                    usePriceTotal = parseFloat(usePriceTotal) + parseFloat(data[i].ripstoreprice);
+//                  }
+//                }
+//                $(".useDetailTotal").html(usePriceTotal);
+            },
+           responseHandler:function (res) {
+               $(".useDetailTotal").html(res.msg);
+               return res;
+           },
+            onLoadError: function () {
+ 
+                 //mif.showErrorMessageBox("数据加载失败！");
+ 
+            }
+          
+        });
+    }
+
+</script>

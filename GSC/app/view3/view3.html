@@ -1,0 +1,141 @@
+<style>
+	.imgback{
+		padding-top: 45px;
+		background-image: url(components/img/国寿财看后台-07.png);
+		background-repeat: no-repeat;
+		width: 980px;
+		height: 10px;
+		float:right;
+		margin-top: -13px;
+
+	}
+</style>
+<div id="page-wrapper">
+	<div class="container-fluid">
+		<!-- Page Heading -->
+		<div class="row">
+			<div class="col-lg-12">
+				<ol class="breadcrumb">
+					<li style="width:100%;position: relative;top:3px">
+						<i style="text-align: left"><b>保费及礼包试算</b>
+						</i>
+						<i style="float: right;text-align: right" ><img width="90%" height="90%" src="components/img/国寿财看后台-06.png"/></i>
+					</li>
+
+				</ol>
+			</div>
+		</div>
+		<!-- /.row -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+						<thead class="theadhtml">
+						<tr id="institle">
+							<td>商业险保费输入：<input type="text" class="propertyins_tentative" name="pprice" onkeyup="tentativechange()" placeholder="请输入商业险保费" value=""/>元</td>
+							<td>对应礼包市场价值：<span class="marketpricetotal">0</span>元</td>
+							<td colspan="2" id="pkgcontent"></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center" id="pkgpar">其他保费档位及礼包参考</td>
+						</tr>
+						<tr>
+							<th>商业险保费</th>
+							<th>礼包市场价值</th>
+							<th colspan="2" align="center" id="pkgtitlecontent">礼包内容</th>
+						</tr>
+						</thead>
+						<tbody class="tbodyhtml">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</div>
+
+<script type="text/javascript">
+	// var service_ip= httpurl;
+	var contentPath = httpurl;
+	var httputil = new jsutil(httpurl);
+
+	function tentativechange(){
+		var propertyins_tentativevalue =  $.trim($(".propertyins_tentative").val());
+		if(propertyins_tentativevalue == ""){
+			return;
+		}
+		if(isNaN(propertyins_tentativevalue)){
+			return;
+		}
+		if(parseFloat(propertyins_tentativevalue) == 0){
+			return;
+		}
+		var jsonpara = {};
+        jsonpara.pprice = parseFloat(propertyins_tentativevalue);
+        httputil.httpget("/propertyins/QueryPremItemList", jsonpara, tentativechangeCallBack);
+	}
+
+	function tentativechangeCallBack(data) {
+		var theadhtml = '<tr>';
+
+		if(data.data==null || data.data.length <1){
+			$(".tbodyhtml").html("");
+			$(".marketpricetotal").html("");
+			$(".pkgnames").html("");
+		}
+		var pkgselectflg = true;
+		for(var i=0;i<data.data.length;i++){
+			if(data.data[i].pkgselectflg==1){
+				pkgselectflg = false;
+				$(".marketpricetotal").html(data.data[i].marketpricetotal);
+				var itemlist = data.data[i].iteminfolist
+				var childrenhtml = "礼包内容：";
+				for(var j=0;j<itemlist.length;j++){
+					if(itemlist[j].ifitemexists == 0){
+						if(itemlist[j].ritype == 1){
+							childrenhtml += '<span style="color: red">'+itemlist[j].pircount+'</span>张<span style="color: red">'+(itemlist[j].pircount*itemlist[j].ripmarketprice)+'</span>元'+ itemlist[j].riitemname+';&nbsp;&nbsp;';
+						}else{
+							childrenhtml += '<span style="color: red">'+itemlist[j].pircount+"</span>张"+ itemlist[j].riitemname+';&nbsp;&nbsp;';
+						}
+					}
+				}
+				$("#pkgcontent").html(childrenhtml);
+				document.getElementById("pkgcontent").colSpan=itemlist.length;
+				document.getElementById("pkgpar").colSpan=4+itemlist.length;
+				document.getElementById("pkgtitlecontent").colSpan=4+itemlist.length;
+			}
+		}
+		if(pkgselectflg){
+			$(".marketpricetotal").html("");
+			$("#pkgcontent").html("");
+		}
+		var tbodyhtml = "";
+		for(var i=0;i<data.data.length;i++){
+			if(data.data[i].pkgselectflg == 1){
+				tbodyhtml += '<tr style="background-color: #CBCCCC">';
+			}else{
+				tbodyhtml += "<tr>";
+			}
+
+			tbodyhtml += '<td>'+data.data[i].pprice+'</td>';
+			tbodyhtml += '<td>'+data.data[i].marketpricetotal+'</td>';
+			var itemlist = data.data[i].iteminfolist
+			var childrenhtml = "";
+			for(var j=0;j<itemlist.length;j++){
+				if(itemlist[j].ifitemexists == 0){
+					if(itemlist[j].ritype == 1){
+						tbodyhtml += '<td><span style="color: red">'+itemlist[j].pircount+'</span>张<span style="color: red">'+(itemlist[j].pircount*itemlist[j].ripmarketprice)+'</span>元'+ itemlist[j].riitemname+'</td>';
+					}else{
+						tbodyhtml += '<td><span style="color: red">'+itemlist[j].pircount+"</span>张"+ itemlist[j].riitemname+'</td>';
+					}
+				}else{
+					tbodyhtml += '<td>-</td>';
+				}
+			}
+			tbodyhtml += '</tr>';
+			$(".tbodyhtml").html(tbodyhtml);
+		}
+	}
+</script>

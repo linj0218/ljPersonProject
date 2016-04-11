@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+	<meta charset="utf-8">
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+
+	<title>中国人寿财产保险股份有限公司</title>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="components/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="components/css/sb-admin.css" rel="stylesheet">
+
+	<!-- Morris Charts CSS -->
+	<link href="components/css/plugins/morris.css" rel="stylesheet">
+
+	<!-- Custom Fonts -->
+	<link href="components/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	<link href="components/css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+	<link href="components/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+
+	<link href="components/css/ngDialog.min.css" rel="stylesheet" type="text/css" />
+	<link href="components/css/ngDialog-theme-default.min.css" rel="stylesheet" type="text/css" />
+	<link href="components/css/ngDialog-theme-plain.min.css" rel="stylesheet" type="text/css" />
+
+	<script src="components/lib/jquery.min.js"></script>
+	<script src="components/config/config.js"></script>
+	<style>
+		.container{
+			margin-left: inherit;
+			margin-right: inherit;
+		}
+	</style>
+	<script>
+		var user_token = sessionStorage.getItem("logintoken");
+		var user_id = sessionStorage.getItem("loginuid");
+		var user_name = sessionStorage.getItem("loginuname");
+		$(function () {
+
+			//window.location.href = "login.html";
+			$(".loginuser").html(user_name);
+			if(sessionStorage.getItem("logintoken") == "" || sessionStorage.getItem("logintoken") == null){
+				window.location.href = "login.html";
+			}
+
+			$("#navbarmenu > ul > li").each(function () {
+				$(this).bind("click",menuclick);
+			});
+		});
+		function menuclick() {
+			$("#navbarmenu > ul > li").each(function () {
+				$(this).removeClass("active");
+			});
+			$(this).addClass("active");
+		}
+
+		function fn_logout() {
+			var para = {};
+			para.ultoken = user_token;
+			para.uid = parseInt(user_id);
+			para.uluid = parseInt(user_id);
+			para.uname = user_name;
+			var jsondata = JSON.stringify(para);
+			$.ajax({
+				type: "GET",
+				url: httpurl + "/userlogin/Userlogout",
+				jsonp: 'callback',
+				data: {"data": jsondata},
+				dataType: "jsonp",
+				cache: false,
+				timeout: 5000,
+				contentType: "application/x-www-form-urlencoded; charset=utf-8",
+				success: function(data){
+					sessionStorage.setItem("logintoken", null);
+					sessionStorage.setItem("loginuid", null);
+					sessionStorage.setItem("loginuname", null);
+					window.location.href = "../app/login.html";
+				}
+			});
+		}
+
+	</script>
+</head>
+<body ng-cloak>
+<div id="wrapper">
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+<!--			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>-->
+			<img src="components/img/中国人寿财险LOGO-07.png" style="float:left;margin-top: 5px;height: 70px" /><a class="navbar-brand" href="#/view1"></a>
+		</div>
+		<!-- Top Menu Items -->
+		<ul class="nav navbar-right top-nav">
+<!--			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+				<ul class="dropdown-menu message-dropdown">
+					<li class="message-preview">
+						<a href="#">
+							<div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+								<div class="media-body">
+									<h5 class="media-heading"><strong>John Smith</strong>
+									</h5>
+									<p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+									<p>Lorem ipsum dolor sit amet, consectetur...</p>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li class="message-preview">
+						<a href="#">
+							<div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+								<div class="media-body">
+									<h5 class="media-heading"><strong>John Smith</strong>
+									</h5>
+									<p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+									<p>Lorem ipsum dolor sit amet, consectetur...</p>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li class="message-preview">
+						<a href="#">
+							<div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="http://placehold.it/50x50" alt="">
+                                    </span>
+								<div class="media-body">
+									<h5 class="media-heading"><strong>John Smith</strong>
+									</h5>
+									<p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+									<p>Lorem ipsum dolor sit amet, consectetur...</p>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li class="message-footer">
+						<a href="#">Read All New Messages</a>
+					</li>
+				</ul>
+			</li>-->
+<!--			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+				<ul class="dropdown-menu alert-dropdown">
+					<li>
+						<a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+					</li>
+					<li>
+						<a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+					</li>
+					<li>
+						<a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
+					</li>
+					<li>
+						<a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
+					</li>
+					<li>
+						<a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
+					</li>
+					<li>
+						<a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="#">View All</a>
+					</li>
+				</ul>
+			</li>-->
+			<li class="dropdown" style = "margin-top: 15px">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="loginuser"></span> <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+<!--					<li>
+						<a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+					</li>-->
+					<!--<li class="divider"></li>-->
+					<li>
+						<a href="javascript:void(0)" onclick="fn_logout();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+		<div class="collapse navbar-collapse navbar-ex1-collapse" id = "navbarmenu">
+			<ul class="nav navbar-nav side-nav" style="margin-top: 25px">
+				<li class="active">
+					<a href="#/view3"><i class="fa fa-fw fa-bar-chart-o"></i> 保费及礼包试算</a>
+				</li>
+				<li>
+					<a href="#/view1"><i class="fa fa-fw fa-dashboard"></i> 客户车辆及礼包信息</a>
+				</li>
+				<li>
+					<a href="#/view4"><i class="fa fa-fw fa-dashboard"></i> 统计报表</a>
+				</li>
+<!--				<li>
+					<a href="#/view5"><i class="fa fa-fw fa-dashboard"></i> 门店</a>
+				</li>
+				<li>
+					<a href="#/view6"><i class="fa fa-fw fa-dashboard"></i> 预约排班</a>
+				</li>-->
+<!--				<li>
+					<a href="#/view5"><i class="fa fa-fw fa-dashboard"></i> 服务网点管理</a>
+				</li>-->
+			</ul>
+		</div>
+		<!-- /.navbar-collapse -->
+	</nav>
+
+	<div id="page-wrapper">
+		<div class="container-fluid" style="margin-top: 25px;">
+			<div ng-view></div>
+		</div>
+		<!-- /.container-fluid -->
+	</div>
+	<!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+	<script data-main="require-config" src="components/lib/require.js"></script>
+	<script src="components/lib/jquery.min.js"></script>
+	<script src="components/lib/bootstrap.min.js"></script>
+	<script src="components/lib/bootstrap-table.js"></script>
+	<script src="components/lib/bootstrap-table-export.js"></script>
+	<script src="components/lib/jquery.base64.js"></script>
+	<script src="components/lib/tableExport.js"></script>
+<!-- 	<script src="components/lib/bootstrap-table-zh-CN.js"></script> -->
+	<script src="components/lib/ajaxfileupload.js"></script>
+	<script>require( ["components/lib/bootstrap-datetimepicker" ] )</script>
+	<script>require( ["components/lib/bootstrap-datetimepicker.zh-CN" ] )</script>
+	<script src = "components/util/util.js"></script>
+<!--	<script>require( ["components/lib/bootstrap-table-zh-CN" ] )</script>-->
+
+
+
+</body>
+</html>
