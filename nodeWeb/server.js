@@ -6,8 +6,10 @@ var config = require("./server/dao/config.js");
 var mime   = require("./server/tooljs/mime.js").mime;
 var api    = require("./server/controller/api.js");
 var port   = 8080;
+//var express = require('express');
+//var app    = express();
 
-var server = http.createServer( function(request, response) {
+http.createServer( function(request, response) {
 
     var pathname = url.parse(request.url).pathname;
     var realPath = "html" + pathname;
@@ -76,6 +78,21 @@ var server = http.createServer( function(request, response) {
         console.log("接口："+apiPort+" 参数："+params);
 
         api.apiController(apiPort, params, response);
+
+        //设置跨域访问
+        /*app.all('*', function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "X-Requested-With");
+            res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+            res.header("X-Powered-By",' 3.2.1');
+            res.header("Content-Type", "application/json;charset=utf-8");
+            next();
+        });
+
+        app.get('/auth/:id/:password', function(req, res) {
+            res.send({id:req.params.id, name: req.params.password});
+        });*/
+
         /*var params = url.parse(request.url, true)
         if (params.query && params.query.callback) {
             resStr =  params.query.jsoncallback + '(' + JSON.stringify(api.apiController(apiPort)) + ')';//jsonp  
@@ -97,4 +114,4 @@ var server = http.createServer( function(request, response) {
     }
 }).listen(port);
 
-console.log('Server running at http://127.0.0.1:'+port+'/');
+console.log('Server running at port:'+port+'/');
