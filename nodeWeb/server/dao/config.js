@@ -4,7 +4,7 @@ function conectDB(){
   //创建连接  
   var client        = mysql.createConnection({
     user     : 'root',
-    password : 'root',
+    password : 'root'
   });
 
   client.connect();
@@ -12,7 +12,7 @@ function conectDB(){
   return client;
 }
 
-/*function select(sqlStr,callback){
+function select(sqlStr,callback){
   var client = conectDB();
   client.query(
     sqlStr,
@@ -48,7 +48,7 @@ function add(sqlStr, callback) {
       }
     }
   );
-}*/
+}
 
 exports.Expires = {
     fileMatch: /^(gif|png|jpg|js|css)$/ig,
@@ -61,3 +61,5 @@ exports.Welcome = {
     file: "index.html"
 };
 exports.conectDB = conectDB;
+exports.select = select;
+exports.add = add;

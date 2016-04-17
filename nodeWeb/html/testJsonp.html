@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<meta charset="UTF-8">
+<meta name="Copyright" content="" />
+<!-- 让IE浏览器用最高级内核渲染页面 还有用 Chrome 框架的页面用webkit 内核
+================================================== -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!-- IOS6全屏 Chrome高版本全屏
+================================================== -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<!-- 让360双核浏览器用webkit内核渲染页面
+================================================== -->
+<meta name="renderer" content="webkit">
+<!-- Mobile Specific Metas
+================================================== -->
+<!-- !!!注意 minimal-ui 是IOS7.1的新属性，最小化浏览器UI -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="format-detection" content="telephone=no">
+<!-- 启用360浏览器的极速模式(webkit) -->
+<meta name="renderer" content="webkit">
+<!-- 避免IE使用兼容模式 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+<meta name="HandheldFriendly" content="true">
+<!-- 微软的老式浏览器 -->
+<meta name="MobileOptimized" content="320">
+<!-- uc强制竖屏 -->
+<meta name="screen-orientation" content="portrait">
+<!-- QQ强制竖屏 -->
+<meta name="x5-orientation" content="portrait">
+<!-- UC强制全屏 -->
+<meta name="full-screen" content="yes">
+<!-- QQ强制全屏 -->
+<meta name="x5-fullscreen" content="true">
+<!-- UC应用模式 -->
+<meta name="browsermode" content="application">
+<!-- QQ应用模式 -->
+<meta name="x5-page-mode" content="app">
+<!-- windows phone 点击无高光 -->
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+<title>测试跨域</title>
+<script src="./js/jquery.min.js"></script>
+<script src="./js/util.js"></script>
+
+<!-- <link rel="stylesheet" type="text/css" href="css/weui.min.css"> -->
+<style>
+*{margin: 0; padding: 0;}
+body{
+	background: #ebebeb;
+	font-size: 16px;
+}
+#login-name, #login-pwd{
+	display: block;
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 10px;
+    padding: 10px 0;
+    border: none;
+    box-sizing: border-box;
+    outline: none;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+}
+#login-btn{
+    width: 60%;
+    margin-left: 20%;
+    border: none;
+    background: greenyellow;
+    margin-top: 10px;
+    padding: 10px 0;
+    border-radius: 5px;
+    color: #666;
+    font-size: 1rem;
+}
+#user-icon{
+	width: 70px;
+    height: 70px;
+    margin: 10px auto 0 0;
+}
+</style>
+<body>
+	<div>
+		<div style="text-align: center;">
+			<img id="user-icon" src="./img/user.png">
+		</div>
+		<!-- <input id="real-name"> -->
+		<input id="login-name" placeholder="请输入用户名或手机号">
+		<!-- <input id="address"> -->
+		<!-- <input id="tel"> -->
+		<input id="login-pwd" type="password" placeholder="请输入密码">
+		<button id="login-btn">登录</button>
+	</div>
+</body>
+<script>
+	var mObj = function(){
+		this.loginName = document.getElementById("login-name");
+		this.loginPwd  = document.getElementById("login-pwd");
+		this.loginBtn  = document.getElementById("login-btn");
+	}
+	mObj.prototype = {
+		init      : function(){
+			this.eventBind();
+		},
+		eventBind : function(){
+			var mainThis = this;
+			this.loginBtn.onclick = function(){
+				var name     = mainThis.loginName.value;
+				var pwd      = mainThis.loginPwd.value;
+				var reqData  = {
+					"name"     : name,
+					"pwd"      : pwd
+				};
+				$.ajax({
+	                type        : 'GET',
+	                url         : APIROOT+"api005",
+	                data        : {"data":JSON.stringify(reqData)},
+	                dataType    : 'jsonp',
+	                jsonp       : 'jsoncallback',
+	                cache       : false,
+	                timeout     : 5000,
+	                contentType : "application/json;charset/utf-8",
+	                success     : function (result) {
+	                	console.log(result);
+	                },
+	                error       : function(err){
+	                	console.log(err);
+	                }
+            	});
+			}
+		}
+	}
+	var mainObj = new mObj();
+	mainObj.init();
+</script>
+</html>
