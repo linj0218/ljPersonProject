@@ -28,6 +28,7 @@ var browser={
 }catch (e){
     console.log(e);
 }*/
+// 获取地址栏参数
 function getArgs(){
 	var args = {};
 	var match = null;
@@ -37,4 +38,51 @@ function getArgs(){
 		args[match[1]] = match[2];
 	}
 	return args;
+}
+// 填充html
+function loadHtml(url,target){
+    $.ajax({
+        type: "get",
+        url: url,
+        dataType: "html",
+        async: false,
+        success: function (data) {
+            $("."+target).html(data);
+        }
+    });
+}
+//时间格式转换 "20150201"-->"2015/02/01"
+function changeTime(o){
+    var len = o.length;
+    switch(len){
+        case 4:
+            var t = o[0]+o[1]+":"+o[2]+o[3];
+            return t;
+            break;
+        case 6:
+            var t = o[0]+o[1]+":"+o[2]+o[3]+":"+o[4]+o[5];
+            return t;
+            break;
+        case 8:
+            var t = o[0]+o[1]+o[2]+o[3]+"/"+o[4]+o[5]+"/"+o[6]+o[7];
+            return t;
+            break;
+        case 12:
+            var y = o[0]+o[1]+o[2]+o[3]+"/"+o[4]+o[5]+"/"+o[6]+o[7]+" "+o[8]+o[9]+":"+o[10]+o[11];
+            return y;
+            break;
+        case 14:
+            var y = o[0]+o[1]+o[2]+o[3]+"/"+o[4]+o[5]+"/"+o[6]+o[7]+" "+o[8]+o[9]+":"+o[10]+o[11]+":"+o[12]+o[13];
+            return y;
+            break;
+        default:return '';
+    }
+}
+//获取当前时间
+function getNowTime(){
+    var t = new Date();
+    var year = t.getFullYear();
+    var month = t.getMonth()+1 >= 10 ? t.getMonth()+1 : "0"+(t.getMonth()+1);
+    var day = t.getDate() >= 10 ? t.getDate() : "0"+t.getDate();
+    return ""+year+month+day;
 }

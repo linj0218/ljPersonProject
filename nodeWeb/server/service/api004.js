@@ -3,12 +3,15 @@ var query  = require("../tooljs/tooljs.js");
 
 function api004Service(params, response){
 	var reqData = JSON.parse(params);
+	console.log(reqData.uid);
 	var resData = {"status":1,"data":"","msg":""};
-	var sqlStr  = "select ugr.score,u.username,u.loginname,u.gender,u.usertel,g.gamename,g.gameurl "+
-				+ "from user_game_rel ugr,user u,games g "+
-				+ "where ugr.userid=u.userid "+
-				+ "and ugr.gameid=g.gameid "+
-				+ "and ugr.userid="+reqData.uid+"";
+	var sqlStr  = "" +
+				"select ugr.score,u.username,u.loginname,u.gender,u.usertel,g.gamename,g.gameurl "+
+				"from user_game_rel ugr,user u,games g "+
+				"where ugr.userid=u.userid "+
+				"and ugr.gameid=g.gameid "+
+				"and ugr.userid="+reqData.uid+"";
+	console.log(sqlStr);
 	query.select(sqlStr, function(results){
 
 		resData.status = 0;

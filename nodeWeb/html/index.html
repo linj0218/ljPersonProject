@@ -42,29 +42,74 @@
 <meta name="msapplication-tap-highlight" content="no">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
-<title>首页</title>
+<title>系统</title>
+<link rel="stylesheet" type="text/css" href="./css/semantic.min.css">
+<link rel="stylesheet" type="text/css" href="./css/jquery.datetimepicker.css">
+
 <script src="./js/jquery.min.js"></script>
 <script src="./js/util.js"></script>
+<script src="./js/semantic.min.js"></script>
+<script type="text/javascript" src="./js/jquery.datetimepicker.js" async="async"></script>
 
 <!-- <link rel="stylesheet" type="text/css" href="css/weui.min.css"> -->
 <style>
-*{margin: 0; padding: 0;}
-body{
-	background: #ebebeb;
-	font-size: 16px;
-}
+	*{margin: 0; padding: 0;}
+	body{
+		background: #ebebeb;
+		font-size: 16px;
+	}
+	#page-top{
+		min-width: 1200px;
+		height: 60px;
+		background-color:#027faf !important;
+		border-radius: 0 !important;
+		font-size: 40px;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 8;
+		color: #fff;
+	}
+	#page-left{
+		width: 150px;
+		float: left;
+		background: #015577;
+		min-height: 583px;
+		height:100%;
+		position: fixed;
+		z-index: 7;
+		color: #fff;
+	}
 </style>
 <body>
-	<div class="game-list">
+	<!--<div class="game-list">
 		<ul>
 
 		</ul>
+	</div>-->
+	<!-- top -->
+	<div class="ui menu visible" id="page-top">
+		<div class="header item"><span class="topwhite">Pluto</span></div>
+
+		<div class="right menu">
+			<div class="item _time"><span class="topwhite"></span></div>
+			<a class="item username"><span class="topwhite" userid="1" id="userid">用户名</span></a>
+			<a class="item logout"><span class="topwhite">注销</span></a>
+		</div>
+	</div>
+	<!-- left -->
+	<div class="" id="page-left">
+
+	</div>
+	<!-- main -->
+	<div class="" id="page-main">
+
 	</div>
 </body>
 <script>
 	var mObj = function(){
 		
-	}
+	};
 	mObj.prototype = {
 		init      : function(){
 			this.initPage();
@@ -72,14 +117,14 @@ body{
 		initPage  : function(){
 			var mainThis = this;
 			var reqData  = {
-
+				"uid" : localStorage.uid
 			};
 			$.ajax({
 	                type        : 'GET',
-	                url         : APIROOT+"api/api003",
+	                url         : APIROOT+"api/api004",
 	                data        : {"data":JSON.stringify(reqData)},
-	                // dataType    : 'jsonp',
-	                jsonp       : 'jsoncallback',
+//				    dataType    : 'jsonp',
+//	                jsonp       : 'jsoncallback',
 	                cache       : false,
 	                timeout     : 5000,
 	                contentType : "application/json; charset/utf-8",
@@ -90,18 +135,27 @@ body{
 	                		alert(data.msg);
 	                		return false;
 	                	}
-	                	this.eventBind();
+						var res = JSON.parse(data.data);
+						var html = "";
+						for(var i=0; i<res.length; i++){
+							html += "<li><a href=\""+res[i].gameurl+"\">"+res[i].username+"</a> <span>"+res[i].gamename+"</span> <span>"+res[i].score+"</span></li>";
+						}
+//						document.getElementsByClassName("game-list")[0].getElementsByTagName("ul")[0].innerHTML = html;
+	                	mainThis.eventBind();
 	                },
 	                error       : function(err){
 	                	console.log(err);
 	                }
             	});
-		}
+		},
 		eventBind : function(){
 			var mainThis = this;
-			
+			setInterval(function(){
+				var myDate = new Date();
+				$("._time span").html(myDate.toLocaleString());
+			},1000);
 		}
-	}
+	};
 	var mainObj = new mObj();
 	mainObj.init();
 </script>
