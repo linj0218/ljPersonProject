@@ -1,0 +1,29 @@
+{
+	"pages":[
+		"pages/index/index",
+		"pages/logs/logs",
+		"pages/start/start"
+	],
+	"window":{
+		"backgroundTextStyle":"light",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "首页",
+		"navigationBarTextStyle":"black",
+		"enablePullDownRefresh":true
+	},
+	"tabBar": {
+		"color": "#999",
+		"selectedColor": "#48C23D",
+		"backgroundColor": "#F6F8F9",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/logs/logs",
+			"text": "日志"
+		}, {
+			"pagePath": "pages/start/start",
+			"text": "测试"
+		}]
+	}
+}

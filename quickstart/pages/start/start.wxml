@@ -1,0 +1,6 @@
+<view>
+	{{text}}
+</view>
+<view><button plain="true" type="primary" size="mini" data-i="0" bindtap="popup">弹窗1</button></view>
+<view><button plain="true" type="default" size="mini" data-i="1"  bindtap="popup">弹窗2</button></view>
+<view><button plain="true" type="warn" size="mini" data-i="2"  bindtap="popup">弹窗3</button></view>
