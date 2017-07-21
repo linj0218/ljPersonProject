@@ -1,12 +1,12 @@
 var app = angular.module('app', []);
 app.controller('appController', ['$scope', '$timeout', ($scope, $timeout) => {
 	$scope.data = {
-        grade: 3,
-        xMax: grades.grade3.defaultTable.length,
-        yMax: grades.grade3.defaultTable[0].length,
+        grade: 5,
+        xMax: grades.grade5.defaultTable.length,
+        yMax: grades.grade5.defaultTable[0].length,
         // 0: empty, 1: wall, 2: empty backgroud, 3: target, 4: empty box, 5: reach
-        gradeTable: grades.grade3.defaultTable,
-        protagonist: grades.grade3.protagonist,
+        gradeTable: grades.grade5.defaultTable,
+        protagonist: grades.grade5.protagonist,
         nowCount: 0
 	}
 
