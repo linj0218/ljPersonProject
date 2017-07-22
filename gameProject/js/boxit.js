@@ -1,18 +1,20 @@
 var app = angular.module('app', []);
 app.controller('appController', ['$scope', '$timeout', ($scope, $timeout) => {
 	$scope.data = {
-        grade: 5,
-        xMax: grades.grade5.defaultTable.length,
-        yMax: grades.grade5.defaultTable[0].length,
+        grade: 1,
+        xMax: grades.grade1.defaultTable.length,
+        yMax: grades.grade1.defaultTable[0].length,
         // 0: empty, 1: wall, 2: empty backgroud, 3: target, 4: empty box, 5: reach
-        gradeTable: grades.grade5.defaultTable,
-        protagonist: grades.grade5.protagonist,
-        nowCount: 0
+        gradeTable: grades.grade1.defaultTable,
+        protagonist: grades.grade1.protagonist,
+        nowCount: 0,
+        stepCount: 0,
 	}
 
 	$scope.keyEvent = (e) => {
 		if(!e || e.keyCode!=37 && e.keyCode!=38 && e.keyCode!=39 && e.keyCode!=40 && e.keyCode!=65 && e.keyCode!=68 && e.keyCode!=83 && e.keyCode!=87) return;
 		// console.log(e.keyCode)
+        $scope.data.stepCount+=1;   
         switch (e.keyCode) {
             case 37: 
             case 65: 
@@ -208,6 +210,10 @@ app.controller('appController', ['$scope', '$timeout', ($scope, $timeout) => {
         $scope.data.nowCount = document.querySelectorAll(".reach").length;
 
         if($scope.data.nowCount == grades[tempGradeName].passCount) {
+            if($scope.data.grade == Object.getOwnPropertyNames(grades).length) {
+                alert("恭喜你通关了!")
+                return;
+            }
             $scope.data.grade += 1;
             tempGradeName = "grade" + $scope.data.grade;
             $scope.data = {
@@ -216,7 +222,8 @@ app.controller('appController', ['$scope', '$timeout', ($scope, $timeout) => {
                 yMax: grades[tempGradeName].defaultTable[0].length,
                 gradeTable: grades[tempGradeName].defaultTable,
                 protagonist: grades[tempGradeName].protagonist,
-                nowCount: 0
+                nowCount: 0,
+                stepCount: $scope.data.stepCount,
             }
         }
     }
